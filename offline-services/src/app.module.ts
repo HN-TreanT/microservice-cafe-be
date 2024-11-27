@@ -45,9 +45,25 @@ import { JwtModule } from "@nestjs/jwt";
 import { jwtContants } from "./constants/jwtConstant";
 import { authProviders } from "./modules/auth/auth.provider";
 import { employeeProviders } from "./modules/employee/employee.provider";
+import { ClientsModule, Transport } from "@nestjs/microservices";
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ClientsModule.register([
+      {
+        name: "OFFLINE_SERVICES",
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'offline-services',
+            brokers: ['localhost:9092'],
+          },
+          consumer: {
+            groupId: 'offline-services-consumer',
+          },
+        }
+      }
+    ]),
     // CacheModule.registerAsync({
     //   isGlobal: true,
     //   imports: [ConfigModule],

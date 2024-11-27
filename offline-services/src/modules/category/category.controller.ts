@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Post, Put, Delete, Param, Body } from "@nestjs/common";
+import { Controller, Get, Req, Post, Put, Delete, Param, Body, ParseIntPipe, ValidationPipe } from "@nestjs/common";
 import { CategoryService } from "./category.service";
 import { UseGuards } from "@nestjs/common";
 import { PaginationGuard } from "src/guards/pagination.guard";
@@ -11,16 +11,15 @@ import { RolesGuard } from "src/guards/role.guard";
 import { Roles } from "src/decorator/role.decorator";
 import { ROLES } from "src/constants/role.enum";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { EventPattern, MessagePattern, Payload } from "@nestjs/microservices";
 
 @Controller("category")
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-  @ApiBearerAuth()
-  @Get("/")
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  async get(@Req() req: any, @Query("search") search: string) {
-    const pagination = req.pagination;
+
+  @MessagePattern("list-category")
+  async get(@Payload() payload : any) {
+    const {pagination, search} = payload
     let filter = {};
     if (search) {
       filter["name"] = { [Op.substring]: search };
@@ -28,38 +27,28 @@ export class CategoryController {
     const data = await this.categoryService.get(pagination, filter);
     return data;
   }
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
-  async getById(@Param("id") id: number) {
+
+  @MessagePattern("detail-category")
+  async getById(@Payload("id", ParseIntPipe) id : number) {
     const data = await this.categoryService.getById(id);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post()
-  async create(@Body() infoCreate: CategoryDto) {
+  @MessagePattern("create-category")
+  async create(@Payload(ValidationPipe) infoCreate: CategoryDto) {
     const data = await this.categoryService.create(infoCreate);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Put("/:id")
-  async edit(@Param("id") id: number, @Body() infoEdit: CategoryDto) {
+  @MessagePattern("edit-category")
+  async edit(@Payload() payload: { id: number; infoEdit: CategoryDto }) {
+    const { id, infoEdit } = payload;
     const data = await this.categoryService.edit(id, infoEdit);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deleteById(@Param("id") id: number) {
+  @MessagePattern("delete-category")
+  async deleteById(@Payload("id", ParseIntPipe) id : number) {
     await this.categoryService.deleteById(id);
     return true;
   }
