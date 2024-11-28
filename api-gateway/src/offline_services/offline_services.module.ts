@@ -12,7 +12,7 @@ import { CategoryModule } from "./category/category.module";
               options: {
                 client: {
                   clientId: 'offline-services',
-                  brokers: ['localhost:9092'],
+                  brokers: ['kafka:9092'],
                 },
                 consumer: {
                   groupId: 'offline-services-consumer',

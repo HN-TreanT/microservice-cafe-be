@@ -1,47 +1,21 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common";
+import { RpcException } from '@nestjs/microservices';
 import { LoggerService } from "src/logger/custom.logger";
 import { HttpArgumentsHost } from "@nestjs/common/interfaces/features/arguments-host.interface";
-import { Response } from "express";
 import { QueryFailedError } from "typeorm";
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
   constructor(private logger: LoggerService) {}
 
-  private static handleResponse(response: Response, exception: HttpException | QueryFailedError | Error): void {
-    let responseBody: any = { message: "Internal server error" };
-    let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-
-    if (exception instanceof HttpException) {
-      responseBody = exception.getResponse();
-      statusCode = exception.getStatus();
-    } else if (exception instanceof QueryFailedError) {
-      statusCode = HttpStatus.BAD_REQUEST;
-      responseBody = {
-        status: false,
-        statusCode: statusCode,
-        message: exception.message,
-      };
-    } else if (exception instanceof Error) {
-      responseBody = {
-        status: false,
-        statusCode: statusCode,
-        message: exception.message,
-      };
-    }
-
-    response.status(statusCode).json(responseBody);
-  }
-
   catch(exception: HttpException | Error, host: ArgumentsHost): void {
     const ctx: HttpArgumentsHost = host.switchToHttp();
-    const response: Response = ctx.getResponse();
-
+    
     // Handling error message and logging
     this.handleMessage(exception);
 
-    // Response to client
-    AllExceptionFilter.handleResponse(response, exception);
+    // Ném lỗi vào RpcException để producer có thể nhận
+    throw this.handleRpcException(exception);
   }
 
   private handleMessage(exception: HttpException | QueryFailedError | Error): void {
@@ -56,5 +30,26 @@ export class AllExceptionFilter implements ExceptionFilter {
     }
 
     this.logger.error(message);
+  }
+
+  private handleRpcException(exception: HttpException | QueryFailedError | Error): RpcException {
+    let errorMessage = "Internal Server Error";
+    let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+
+    if (exception instanceof HttpException) {
+      errorMessage = exception.message || "HTTP Exception occurred";
+      statusCode = exception.getStatus();
+    } else if (exception instanceof QueryFailedError) {
+      errorMessage = `Database Error: ${exception.message}`;
+      statusCode = HttpStatus.BAD_REQUEST;
+    } else if (exception instanceof Error) {
+      errorMessage = exception.message || "An unexpected error occurred";
+    }
+
+    // Ném lỗi dưới dạng RpcException để trả về cho producer
+    return new RpcException({
+      statusCode,
+      message: errorMessage,
+    });
   }
 }

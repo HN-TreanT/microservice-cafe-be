@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { EMPLOYEE_REPOSITORY } from "src/constants/repository_enum";
 import { Employee } from "../employee/employee.entity";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 import RegisterInfo from "./dto/register-info";
 import EmployeeReponse from "../employee/dto/employee-response.dto";
 import { JwtService } from "@nestjs/jwt";

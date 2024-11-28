@@ -49,21 +49,21 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    ClientsModule.register([
-      {
-        name: "OFFLINE_SERVICES",
-        transport: Transport.KAFKA,
-        options: {
-          client: {
-            clientId: 'offline-services',
-            brokers: ['localhost:9092'],
-          },
-          consumer: {
-            groupId: 'offline-services-consumer',
-          },
-        }
-      }
-    ]),
+    // ClientsModule.register([
+    //   {
+    //     name: "OFFLINE_SERVICES",
+    //     transport: Transport.KAFKA,
+    //     options: {
+    //       client: {
+    //         clientId: 'offline-services',
+    //         brokers: ['localhost:9092'],
+    //       },
+    //       consumer: {
+    //         groupId: 'offline-services-consumer',
+    //       },
+    //     }
+    //   }
+    // ]),
     // CacheModule.registerAsync({
     //   isGlobal: true,
     //   imports: [ConfigModule],
@@ -127,10 +127,10 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
       provide: APP_FILTER,
       useClass: AllExceptionFilter,
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: TransformInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: TransformInterceptor,
+    // },
   ],
 })
 export class AppModule implements NestModule {

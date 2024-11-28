@@ -11,7 +11,7 @@ import { RolesGuard } from "src/guards/role.guard";
 import { Roles } from "src/decorator/role.decorator";
 import { ROLES } from "src/constants/role.enum";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
-import { EventPattern, MessagePattern, Payload } from "@nestjs/microservices";
+import { EventPattern, MessagePattern, Payload, RpcException } from "@nestjs/microservices";
 
 @Controller("category")
 export class CategoryController {
@@ -25,26 +25,27 @@ export class CategoryController {
       filter["name"] = { [Op.substring]: search };
     }
     const data = await this.categoryService.get(pagination, filter);
-    return data;
+    return data
   }
 
   @MessagePattern("detail-category")
   async getById(@Payload("id", ParseIntPipe) id : number) {
     const data = await this.categoryService.getById(id);
-    return data;
+    if (!data) return null
+    return data.get()
   }
 
   @MessagePattern("create-category")
   async create(@Payload(ValidationPipe) infoCreate: CategoryDto) {
     const data = await this.categoryService.create(infoCreate);
-    return data;
+    return data.get();
   }
 
   @MessagePattern("edit-category")
   async edit(@Payload() payload: { id: number; infoEdit: CategoryDto }) {
     const { id, infoEdit } = payload;
     const data = await this.categoryService.edit(id, infoEdit);
-    return data;
+    return data.get();
   }
 
   @MessagePattern("delete-category")

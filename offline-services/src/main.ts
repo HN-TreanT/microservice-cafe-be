@@ -7,6 +7,9 @@ import { NestExpressApplication } from "@nestjs/platform-express";
 import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { MicroserviceOptions, Transport } from "@nestjs/microservices";
+import { RpcExceptionFilter } from "./filter/rpcexception.filter";
+// import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -16,6 +19,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix("/api/v1");
   app.useStaticAssets(path.join(__dirname, "../public"));
+
+  app.useGlobalFilters(new RpcExceptionFilter());
 
   app.use(bodyParser.json({}));
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,5 +45,21 @@ async function bootstrap() {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
+
+  const microservices = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          brokers: ['127.0.0.1:9094'],
+        },
+        consumer: {
+          groupId: 'offline-services-consumer',
+        },
+      },
+    }
+  );
+  await microservices.listen();
 }
 bootstrap();

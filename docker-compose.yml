@@ -1,0 +1,102 @@
+version: "3"
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - microservices_api_services
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9094:9094"
+    environment:
+      # KAFKA_ADVERTISED_HOST_NAME: localhost
+      # KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://127.0.0.1:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    depends_on:
+      - zookeeper
+    networks:
+      - microservices_api_services
+  # zookeeper:
+  #   image: confluentinc/cp-zookeeper:latest
+  #   ports:
+  #    - "2181:2181"
+  #    - "2888:2888"
+  #    - "3888:3888"
+  #   healthcheck:
+  #     test: echo stat | nc localhost 2181
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 3
+  #   environment:
+  #    - ZOOKEEPER_SERVER_ID=1
+  #    - ZOOKEEPER_CLIENT_PORT=2181
+  #    - ZOOKEEPER_TICK_TIME=2000
+  #    - ZOOKEEPER_INIT_LIMIT=5
+  #    - ZOOKEEPER_SYNC_LIMIT=2
+  #    - ZOOKEEPER_SERVERS=zookeeper:2888:3888
+  #   networks:
+  #     - microservices_api_services
+  # kafka:
+  #   image: confluentinc/cp-kafka:latest
+  #   depends_on:
+  #     - zookeeper
+  #   ports:
+  #     - "9092:9092"
+  #   environment:
+  #     - KAFKA_LISTENERS=LISTENER_INT://kafka:29092,LISTENER_EXT://0.0.0.0:9092
+  #     - KAFKA_ADVERTISED_LISTENERS=LISTENER_INT://kafka:29092,LISTENER_EXT://localhost:9092
+  #     - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=LISTENER_INT:PLAINTEXT,LISTENER_EXT:PLAINTEXT
+  #     - KAFKA_INTER_BROKER_LISTENER_NAME=LISTENER_INT
+  #     - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+  #     - KAFKA_BROKER_ID=0
+  #   networks:
+  #     - microservices_api_services
+  
+  api_gateway:
+    build: 
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    image: api_gate_way_image
+    container_name: api_gateway
+    environment:
+      - PORT=8080
+    ports: 
+      - "8889:8080"
+    volumes: 
+      - ./api-gateway:/app
+    depends_on:
+      - kafka
+      - zookeeper
+    networks:
+      - microservices_api_services
+  # offline_services:
+  #   build: 
+  #     context: ./offline-services
+  #     dockerfile: Dockerfile
+  #   image: offline_servieces_image
+  #   container_name: offline_services
+  #   environment:
+  #     - PORT=8080
+  #   ports: 
+  #     - "8080:8080"
+  #   volumes: 
+  #     - ./offline-services:/app
+  #   depends_on:
+  #     - kafka
+  #     - zookeeper
+  #   networks:
+  #     - microservices_api_services
+networks:
+  microservices_api_services:
+    driver: bridge

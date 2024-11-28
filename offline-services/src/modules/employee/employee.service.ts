@@ -10,7 +10,7 @@ import { EmployeeWorkShiftService } from "../employee_workshift/employee_workshi
 import { EmployeeFilter } from "./dto/employee-filter.dto";
 import { Op } from "sequelize";
 import EmployeeCreate from "./dto/employee-create.dto";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 @Injectable()
 export class EmployeeService {
   constructor(
