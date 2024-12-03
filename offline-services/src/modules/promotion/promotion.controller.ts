@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, Req, UseGuards, UseInterceptors } from "@nestjs/common";
 import { PromotionServices } from "./promotion.service";
 
 import { PromotionCreate } from "./dto/promtion-create.dto";
@@ -11,16 +11,13 @@ import { Roles } from "src/decorator/role.decorator";
 import { ROLES } from "src/constants/role.enum";
 import { RolesGuard } from "src/guards/role.guard";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 
-@ApiTags('promotion')
 @Controller("promotion")
 export class PromotionController {
   constructor(private readonly promotionService: PromotionServices) {}
 
-  @ApiBearerAuth()
-  @Get("/")
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
+  @MessagePattern("list-promotion")
   async get(@Req() req: any, @Query() filter: PromotionFilter) {
     let promotion_filter: any = {};
     const pagination = req.pagination;
@@ -31,39 +28,26 @@ export class PromotionController {
     return data;
   }
 
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
+  @MessagePattern("detail-promotion")
   async getById(@Param("id") id: number) {
     const data = await this.promotionService.getById(id);
     return data;
   }
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post()
-  async create(@Body() promotionCreate: PromotionCreate) {
+  @MessagePattern("create-promotion")
+  async create(@Payload() promotionCreate: PromotionCreate) {
     const data = await this.promotionService.create(promotionCreate);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Put("/:id")
-  async edit(@Param("id") id: number, @Body() promotionEdit: PromotionEdit) {
+  @MessagePattern("edit-promotion")
+  async edit(@Payload() payload: {id:  number, promotionEdit: PromotionEdit }) {
+    const {id, promotionEdit} = payload;
     const data = await this.promotionService.edit(id, promotionEdit);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deleteById(@Param("id") id: number) {
+  @MessagePattern("delete-promotion")
+  async deleteById(@Payload("id", ParseIntPipe) id: number) {
     await this.promotionService.delete(id);
     return true;
   }

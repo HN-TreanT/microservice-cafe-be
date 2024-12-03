@@ -1,6 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { CategoryModule } from "./category/category.module";
+import { ProductModule } from "./product/product.module";
+import { CheckInventoryModule } from "./check_inventory/check-inventory.module";
+import { ComboModule } from "./combo/combo.module";
 
 
 @Module({
@@ -20,7 +23,10 @@ import { CategoryModule } from "./category/category.module";
               }
             }
           ]),
-        CategoryModule],
+        CategoryModule,
+        ProductModule,
+        CheckInventoryModule, 
+        ComboModule],
     controllers: [],
     providers: [],
     exports: [ClientsModule]

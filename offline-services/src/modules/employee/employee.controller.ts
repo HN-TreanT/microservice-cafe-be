@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, Req, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Put, Query, Req, UseGuards, UseInterceptors } from "@nestjs/common";
 import { EmployeeService } from "./employee.service";
 import { PaginationGuard } from "src/guards/pagination.guard";
 import EmployeeUpdate from "./dto/employee-update.dto";
@@ -9,51 +9,40 @@ import { Roles } from "src/decorator/role.decorator";
 import { RolesGuard } from "src/guards/role.guard";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import EmployeeCreate from "./dto/employee-create.dto";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 
-@ApiTags('employee')
 @Controller("employee")
 export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/")
-  async get(@Req() req: any, @Query() filter: EmployeeFilter) {
-    const pagination = req.pagination;
+  @MessagePattern("list-employee")
+  async get(@Payload() payload : any) {
+    const {pagination, filter} = payload;
     const data = await this.employeeService.get(pagination, filter);
     return data;
   }
 
-  @Post("/")
-  async create( @Body() infoCreate: EmployeeCreate) {
+  @MessagePattern("create-employee")
+  async create( @Payload() infoCreate: EmployeeCreate) {
     const data = await this.employeeService.create(infoCreate);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
-  async getById(@Param("id") id: number) {
+  @MessagePattern("detail-employee")
+  async getById(@Payload("id", ParseIntPipe) id: number) {
     const data = await this.employeeService.getById(id);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Put("/:id")
-  async edit(@Param("id") id: number, @Body() editInfo: EmployeeUpdate) {
+  @MessagePattern("edit-employee")
+  async edit(@Payload() payload: { id: number, editInfo: EmployeeUpdate }) {
+    const {id, editInfo} = payload; 
     const data = await this.employeeService.update(id, editInfo);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deleteById(@Param("id") id: number) {
+  @MessagePattern("delete-employee")
+  async deleteById(@Param("id", ParseIntPipe) id: number) {
     await this.employeeService.deleteById(id);
     return true;
   }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Put, Req, Body, Param, Query, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Delete, Put, Req, Body, Param, Query, UseGuards, ParseIntPipe } from "@nestjs/common";
 import { DetailShipmentService } from "./detail-shipment.service";
 import { PaginationGuard } from "src/guards/pagination.guard";
 
@@ -12,54 +12,40 @@ import { RolesGuard } from "src/guards/role.guard";
 import { Roles } from "src/decorator/role.decorator";
 import { ROLES } from "src/constants/role.enum";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 
-@ApiTags('detail-shipment')
 @Controller("detail-shipment")
 export class DetailShipmentController {
   constructor(private readonly detailShipmentService: DetailShipmentService) {}
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/")
-  async get(@Req() req: any, @Query() filter: DetailShipmentFilter, @Query() order: DetailShipmentOrder) {
-    const pagination = req.pagination;
+  @MessagePattern("list-detail-shipment")
+  async get(@Payload() payload : {pagination, filter: DetailShipmentFilter, order: DetailShipmentOrder}) {
+    const {pagination, filter, order} = payload;
     const data = await this.detailShipmentService.get(pagination, filter, order);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
-  async getById(@Param("id") id: number) {
+  @MessagePattern("detail-detail-shipment")
+  async getById(@Payload("id", ParseIntPipe) id : number) {
     const data = await this.detailShipmentService.getById(id);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post()
-  async create(@Body() infoCreate: DetailShipmentCreate) {
+  @MessagePattern("create-detail-shipment")
+  async create(@Payload() infoCreate: DetailShipmentCreate) {
     const data = await this.detailShipmentService.create(infoCreate);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Put("/:id")
-  async edit(@Param("id") id: number, @Body() infoEdit: DetailShipmentEdit) {
+  @MessagePattern("edit-detail-shipment")
+  async edit(@Payload() payload: { id: number, infoEdit: DetailShipmentEdit}) {
+    const {id, infoEdit} = payload;
     const data = await this.detailShipmentService.edit(id, infoEdit);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deleteById(@Param("id") id: number) {
+  @MessagePattern("delete-detail-shipment")
+  async deleteById(@Payload("id", ParseIntPipe) id : number) {
     await this.detailShipmentService.delete(id);
     return true;
   }

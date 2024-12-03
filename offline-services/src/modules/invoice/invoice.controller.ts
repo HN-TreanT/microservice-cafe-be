@@ -1,5 +1,5 @@
 import { InvoiceService } from "./invoice.service";
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { InvoiceCreate } from "./dto/invoice-create.dto";
 import { InoviceEdit } from "./dto/invoice-edit.dto";
 import { PaginationGuard } from "src/guards/pagination.guard";
@@ -18,108 +18,84 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import {  readFileSync } from "fs";
 import { join } from "path";
 import { Response } from "express";
-@ApiTags("invoice")
+import { MessagePattern, Payload } from "@nestjs/microservices";
+
 @Controller("invoice")
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/")
-  async get(@Req() req: any, @Query() filter: FilterDto, @Query() order: OrderInvoiceDto) {
-    const pagination = req.pagination;
+
+  @MessagePattern("list-invoice")
+  async get(@Payload() payload: {pagination:  any,filter: FilterDto,  order: OrderInvoiceDto}) {
+    const {pagination, filter, order} = payload;
     const data = await this.invoiceService.get(pagination, filter, order);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/detail-by-id-table/:id_table")
-  async getDetailInvoiceByIdTable(@Param("id_table") id_table: any,) {
+  @MessagePattern("detail-by-id-table")
+  async getDetailInvoiceByIdTable(@Payload("id_table", ParseIntPipe) id_table: any,) {
     const data = await this.invoiceService.getDetailInvoiceByIdTable(id_table);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
-  async getById(@Param("id") id: number) {
+  @MessagePattern("detail-invoice")
+  async getById(@Payload("id", ParseIntPipe) id: number) {
     const data = await this.invoiceService.getById(id);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post()
-  async create(@Body() createInfo: InvoiceCreate) {
+  @MessagePattern("create-invoice")
+  async create(@Payload() createInfo: InvoiceCreate) {
     const data = await this.invoiceService.create(createInfo);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Put("/:id")
-  async edit(@Param("id") id: number, @Body() updateInfo: InoviceEdit) {
+  @MessagePattern("edit-invoice")
+  async edit(@Payload() payload: {id : number,updateInfo: InoviceEdit}) {
+    const {id, updateInfo} = payload;
     const data = await this.invoiceService.edit(id, updateInfo);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deleteById(@Param("id") id: number) {
+  @MessagePattern("delete-invoice")
+  async deleteById(@Payload("id", ParseIntPipe) id: number) {
     await this.invoiceService.deleteById(id);
     return true;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
+  @MessagePattern("split-order")
   @Post("/split-order")
-  async splitOrder(@Body() splitInvoice: SplitInvoice) {
+  async splitOrder(@Payload() splitInvoice: SplitInvoice) {
     return await this.invoiceService.splitInvoice(splitInvoice);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAccessGuard)
+  @MessagePattern("combine-inovice")
   @Post("/combine-inovice")
-  async combineInvoice(@Body() combineInvoice: CombineInvoice) {
+  async combineInvoice(@Payload() combineInvoice: CombineInvoice) {
     return await this.invoiceService.combineInvocie(combineInvoice);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAccessGuard)
-  @Post("/payment/:invoice_id")
-  async payment(@Param("invoice_id") invoice_id: number, @Body() paymentInfo: Payment) {
-    console.log(invoice_id);
+  @MessagePattern("payment")
+  async payment(@Payload() payload : { invoice_id: number,paymentInfo: Payment}) {
+
+    const {invoice_id, paymentInfo} = payload
     return await this.invoiceService.payment(invoice_id, paymentInfo);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAccessGuard)
-  @Get("/complete-invoice/:id")
-  async test(@Param("id") id: number) {
+  @MessagePattern("complete-invoice")
+  async test(@Payload("id") id: number) {
     const data = await this.invoiceService.completeInvocie(id);
     return data;
   }
 
-  @ApiBearerAuth()
-  // @UseGuards(JwtAccessGuard)
-  @Get("/over-view/get")
+  @MessagePattern("over-view")
   async getOverView(@Query("time") time: string) {
     const data = await this.invoiceService.getOrverView(time);
     return data;
   }
 
-  @ApiBearerAuth()
-  // @UseGuards(JwtAccessGuard)
-  @Get("/over-view/revenue-overview")
+
+  @MessagePattern("revenue-overview")
   async getRevenueOverview() {
     const data = await this.invoiceService.getRevenueOverview();
     return data;

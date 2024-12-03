@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Post, Put, Delete, Param, Body, UseGuards, Query, Search } from "@nestjs/common";
+import { Controller, Get, Req, Post, Put, Delete, Param, Body, UseGuards, Query, Search, ParseIntPipe } from "@nestjs/common";
 import { MaterialSerivce } from "./material.service";
 import { PaginationGuard } from "src/guards/pagination.guard";
 
@@ -10,54 +10,40 @@ import { RolesGuard } from "src/guards/role.guard";
 import { Roles } from "src/decorator/role.decorator";
 import { ROLES } from "src/constants/role.enum";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 
-@ApiTags('material')
 @Controller("material")
 export class MaterialController {
   constructor(private readonly materialService: MaterialSerivce) {}
 
-  @ApiBearerAuth()
-  @Get("/")
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  async get(@Req() req: any, @Query("search") search: string, @Query() order: MaterialOrder) {
-    const pagination = req.pagination;
+  @MessagePattern("list-material")
+  async get(@Payload() payload: any) {
+    const {pagination, order, search} = payload
     const data = await this.materialService.get(pagination, search, order);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
-  async getById(@Param("id") id: number) {
+  @MessagePattern("detail-material")
+  async getById(@Payload("id", ParseIntPipe) id: number) {
     const data = await this.materialService.getById(id);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post("")
-  async create(@Body() infoCreate: MaterialCreate) {
+  @MessagePattern("create-material")
+  async create(@Payload() infoCreate: MaterialCreate) {
     const data = await this.materialService.create(infoCreate);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Put("/:id")
-  async edit(@Param("id") id: number, @Body() editInfo: MaterialEdit) {
+  @MessagePattern("edit-material")
+  async edit(@Payload() payload: {id:  number, editInfo: MaterialEdit }) {
+    const {id, editInfo} = payload;
     const data = await this.materialService.edit(id, editInfo);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deleteById(@Param("id") id: number) {
+  @MessagePattern("delete-material")
+  async deleteById(@Payload("id", ParseIntPipe) id: number) {
     await this.materialService.delete(id);
     return true;
   }

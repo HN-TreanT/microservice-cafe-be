@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { TablefoodInoviceService } from "./tablefood-invoice.service";
 
 import { TblInvoiceCreate } from "./dto/tbf-invoice-create";
@@ -9,54 +9,39 @@ import { ROLES } from "src/constants/role.enum";
 import { Roles } from "src/decorator/role.decorator";
 import { RolesGuard } from "src/guards/role.guard";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 
-@ApiTags("tablefood-invoice")
 @Controller("tablefood-invoice")
 export class TablefoodInoviceController {
   constructor(private readonly tablefoodInvoiceSerivce: TablefoodInoviceService) {}
 
-  @ApiBearerAuth()
-  @Get("/")
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  async get(@Req() req: any) {
-    const pagination = req.pagination;
+  @MessagePattern("list-tablefood-invoice")
+  async get(@Payload() payload: any) {
+    const { pagination } = payload;
     const data = await this.tablefoodInvoiceSerivce.get(pagination, {});
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
-  async getById(@Param("id") id: number) {
+  @MessagePattern("detail-tablefood-invoice")
+  async getById(@Payload("id", ParseIntPipe) id: number) {
     const data = await this.tablefoodInvoiceSerivce.getById(id);
     return data;
   }
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post()
-  async create(@Body() createInfo: TblInvoiceCreate) {
+  @MessagePattern("create-tablefood-invoice")
+  async create(@Payload() createInfo: TblInvoiceCreate) {
     const data = await this.tablefoodInvoiceSerivce.create(createInfo);
     return data;
-  }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Put("/:id")
-  async edit(@Param("id") id: number, @Body() updateInfo: TblInvoiceEdit) {
+  }
+  @MessagePattern("edit-tablefood-invoice")
+  async edit(@Payload()  payload :  { id: number, updateInfo: TblInvoiceEdit }) {
+    const { id, updateInfo } = payload;
     const data = await this.tablefoodInvoiceSerivce.edit(id, updateInfo);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deleteById(@Param("id") id: number) {
+  @MessagePattern("delete-tablefood-invoice")
+  async deleteById(@Payload("id") id: number) {
     await this.tablefoodInvoiceSerivce.deleteById(id);
     return true;
   }

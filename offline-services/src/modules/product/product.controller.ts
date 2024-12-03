@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ProductServices } from "./product.service";
 import { PaginationGuard } from "src/guards/pagination.guard";
 
@@ -13,65 +13,43 @@ import { RolesGuard } from "src/guards/role.guard";
 import { Roles } from "src/decorator/role.decorator";
 import { ROLES } from "src/constants/role.enum";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 
-@ApiTags('product')
 @Controller("product")
 export class ProductController {
   constructor(private readonly productService: ProductServices) {}
 
-  @ApiBearerAuth()
-  @Get()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  async get(@Req() req: any, @Query() filter: ProductFilter, @Query() order?: ProductOrder) {
-    const pagination = req.pagination;
+  @MessagePattern("list-product")
+  async get(@Payload() payload: {pagination: any,  filter: ProductFilter, order?: ProductOrder} ) {
+    const { pagination, filter, order } = payload;
     const data = await this.productService.get(pagination, filter, order);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
-  async getById(@Param("id") id: number) {
+  @MessagePattern("detail-product")
+  async getById(@Payload("id") id: number) {
     const data = await this.productService.getById(id);
     return data;
   }
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor("image"))
-  @Post("")
-  async create(@Body() infoCreate: ProductCreate, @UploadedFile() image: Express.Multer.File) {
+  @MessagePattern("create-product")
+  async create(@Payload() infoCreate: ProductCreate, @UploadedFile() image: Express.Multer.File) {
     const data = await this.productService.create(infoCreate, image);
     return data;
   }
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor("image"))
-  @Put("/:id")
-  async edit(@Param("id") id: number, @Body() editInfo: ProductEdit, @UploadedFile() image: Express.Multer.File) {
+  @MessagePattern("edit-product")
+  async edit(@Payload() payload : { id: number, editInfo: ProductEdit, image: Express.Multer.File }) {
+    const { id, editInfo, image } = payload;
     const data = await this.productService.edit(id, editInfo, image);
     return data;
   }
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deletById(@Param("id") id: number) {
+  @MessagePattern("delete-product")
+  async deletById(@Payload("id", ParseIntPipe) id: number) {
     await this.productService.deleteById(id);
     return true;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post("/check-valid-material")
-  async checkValidMaterial(@Body() info: CheckValidMaterail) {
+  @MessagePattern("check-valid-material")
+  async checkValidMaterial(@Payload() info: CheckValidMaterail) {
     return await this.productService.checkValidMaterial(info.amount, info.id_product);
   }
 }

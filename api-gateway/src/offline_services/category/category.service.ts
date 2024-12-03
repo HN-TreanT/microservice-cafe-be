@@ -10,8 +10,6 @@ export class CategoryService {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-
-
   async onModuleInit() {
     this.offlineClient.subscribeToResponseOf('list-category');
     this.offlineClient.subscribeToResponseOf('detail-category');

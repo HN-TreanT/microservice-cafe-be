@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, UseGuards, Query, Param, Body, Req } from "@nestjs/common";
+import { Controller, Get, Post, Put, Delete, UseGuards, Query, Param, Body, Req, ParseIntPipe } from "@nestjs/common";
 import { InvoiceDetailService } from "./invoice-detail.service";
 import { PaginationGuard } from "src/guards/pagination.guard";
 import { Op } from "sequelize";
@@ -10,54 +10,40 @@ import { RolesGuard } from "src/guards/role.guard";
 import { ROLES } from "src/constants/role.enum";
 import { Roles } from "src/decorator/role.decorator";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 
-@ApiTags('invoice-detail')
 @Controller("invoice-detail")
 export class InvoiceDetailController {
   constructor(private readonly invoiceDetailService: InvoiceDetailService) {}
 
-  @ApiBearerAuth()
-  @Get("/")
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  async get(@Req() req: any, @Query() filter: DtInvoiceFilter) {
-    const pagination = req.pagination;
+  
+  @MessagePattern("list-invoice-detail")
+  async get(@Payload() payload : any)  {
+    const {pagination, filter } = payload;
     const data = await this.invoiceDetailService.get(pagination, filter);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
-  async getById(@Param("id") id: number) {
+  @MessagePattern("detail-invoice-detail")
+  async getById(@Payload("id", ParseIntPipe) id: number) {
     const data = await this.invoiceDetailService.getById(id);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post()
-  async create(@Body() infoCreate: InvoiceDetailCreate) {
+  @MessagePattern("create-invoice-detail")
+  async create(@Payload() infoCreate: InvoiceDetailCreate) {
     const data = await this.invoiceDetailService.create(infoCreate);
     return data;
   }
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
+  @MessagePattern("edit-invoice-detail")
   @Put("/:id")
-  async edit(@Param("id") id: number, @Body() infoEdit: InvoiceDetailEdit) {
+  async edit(@Payload() payload : { id: number,  infoEdit: InvoiceDetailEdit}) {
+    const {id, infoEdit} = payload;
     const data = await this.invoiceDetailService.edit(id, infoEdit);
     return data;
   }
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN, ROLES.MANGER, ROLES.USER)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deleteById(@Param("id") id: number) {
+  @MessagePattern("delete-invoice-detail")
+  async deleteById(@Payload("id", ParseIntPipe) id: number) {
     await this.invoiceDetailService.deleteById(id);
     return true;
   }

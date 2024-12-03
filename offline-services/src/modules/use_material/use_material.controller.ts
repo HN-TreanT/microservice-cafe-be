@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, UseGuards, Req, Body, Param } from "@nestjs/common";
+import { Controller, Get, Post, Put, Delete, UseGuards, Req, Body, Param, ParseIntPipe } from "@nestjs/common";
 import { UseMaterialService } from "./use_material.service";
 import { PaginationGuard } from "src/guards/pagination.guard";
 
@@ -10,63 +10,44 @@ import { ROLES } from "src/constants/role.enum";
 import { JwtAccessGuard } from "src/guards/jwt-access.guard";
 import { RolesGuard } from "src/guards/role.guard";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 
-@ApiTags('use-material')
 @Controller("use-material")
 export class UseMaterialController {
   constructor(private readonly useMaterialService: UseMaterialService) {}
 
-  @ApiBearerAuth()
-  @Get("/")
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  async get(@Req() req: any) {
-    const pagination = req.pagination;
+  @MessagePattern("list-use-material")
+  async get(@Payload() payload: any) {
+    const { pagination } = payload;
     const data = await this.useMaterialService.get(pagination, {});
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Get("/:id")
-  async getById(@Param("id") id: number) {
+  @MessagePattern("detail-use-material")
+  async getById(@Payload("id") id: number) {
     const data = await this.useMaterialService.getById(id);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post()
-  async create(@Body() createInfo: UseMaterialCreate) {
+  @MessagePattern("create-use-material")
+  async create(@Payload() createInfo: UseMaterialCreate) {
     const data = await this.useMaterialService.create(createInfo);
     return data;
   }
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Post("/createMany")
-  async createMany(@Body() createInfo: UseMaterialCreate[]) {
+  @MessagePattern("create-many-use-material")
+  async createMany(@Payload() createInfo: UseMaterialCreate[]) {
     const data = await this.useMaterialService.createMany(createInfo);
     return data;
   }
 
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Put("/:id")
-  async edit(@Param("id") id: number, @Body() updateInfo: UseMaterialEdit) {
+  @MessagePattern("edit-use-material")
+  async edit(@Payload() payload : { id: number,  updateInfo: UseMaterialEdit }) {
+    const { id, updateInfo } = payload;
     const data = await this.useMaterialService.edit(id, updateInfo);
     return data;
   }
-
-  @ApiBearerAuth()
-  @Roles(ROLES.ADMIN)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Delete("/:id")
-  async deleteById(@Param("id") id: number) {
+  @MessagePattern("delete-use-material")
+  async deleteById(@Payload("id", ParseIntPipe) id: number) {
     await this.useMaterialService.deleteById(id);
     return true;
   }
