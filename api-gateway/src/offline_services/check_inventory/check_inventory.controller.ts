@@ -6,7 +6,6 @@ import { CheckInventoryDto } from "./dto/check-invenoty-dto.dto";
 import { CheckInventoryFilter } from "./dto/check-iventory-filter.dto";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 
-@ApiTags('check-inventory')
 @Controller("check-inventory")
 export class CheckInventoryController {
   constructor(private readonly checkInventorySerivce: CheckInventoryService) {}

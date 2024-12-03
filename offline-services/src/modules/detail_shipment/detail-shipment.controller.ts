@@ -19,7 +19,7 @@ export class DetailShipmentController {
   constructor(private readonly detailShipmentService: DetailShipmentService) {}
 
   @MessagePattern("list-detail-shipment")
-  async get(@Payload() payload : {pagination, filter: DetailShipmentFilter, order: DetailShipmentOrder}) {
+  async get(@Payload() payload : {pagination: any, filter: DetailShipmentFilter, order: DetailShipmentOrder}) {
     const {pagination, filter, order} = payload;
     const data = await this.detailShipmentService.get(pagination, filter, order);
     return data;

@@ -18,10 +18,7 @@ export class TableController {
 
   @MessagePattern("list-table-food")
   async get(@Payload() payload: any) {
-    const {status, search, pagination} =  payload
-    let filter: any = {};
-    if (search) filter.name = { [Op.substring]: search };
-    if (!Number.isNaN(status)) filter.status = status;
+    const {filter, pagination} =  payload
     const data = await this.tableSerivce.get(pagination, filter);
     return data;
   }

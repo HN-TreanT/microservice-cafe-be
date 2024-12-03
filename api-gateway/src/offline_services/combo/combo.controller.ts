@@ -6,7 +6,6 @@ import { Op } from "sequelize";
 import { ComboCreate } from "./dto/combo-create.dto";
 import { ComboEdit } from "./dto/combo-edit.dto";
 import { CheckValidMaterial } from "./dto/check-valid-material.dto";
-import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 
 @Controller("combo")
 export class ComboController {

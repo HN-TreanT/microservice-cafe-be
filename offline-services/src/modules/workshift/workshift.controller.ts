@@ -32,9 +32,9 @@ export class WorkshiftController {
   }
 
   @MessagePattern("edit-workshift")
-  async edit(@Payload() payload : { id: number,  updateInfo: WorkshiftCreate }) {
-    const { id, updateInfo } = payload;
-    const data = await this.workshiftService.edit(id, updateInfo);
+  async edit(@Payload() payload : { id: number,  infoEdit: WorkshiftCreate }) {
+    const { id, infoEdit } = payload;
+    const data = await this.workshiftService.edit(id, infoEdit);
     return data;
   }
 

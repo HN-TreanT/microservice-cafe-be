@@ -41,9 +41,9 @@ export class UseMaterialController {
   }
 
   @MessagePattern("edit-use-material")
-  async edit(@Payload() payload : { id: number,  updateInfo: UseMaterialEdit }) {
-    const { id, updateInfo } = payload;
-    const data = await this.useMaterialService.edit(id, updateInfo);
+  async edit(@Payload() payload : { id: number,  infoEdit: UseMaterialEdit }) {
+    const { id, infoEdit } = payload;
+    const data = await this.useMaterialService.edit(id, infoEdit);
     return data;
   }
   @MessagePattern("delete-use-material")

@@ -17,11 +17,8 @@ export class DetailCheckInventorContronller {
 
   @MessagePattern("list-check-inventor")
   async get(@Payload() payload: any) {
-    const {pagination, id_detail_check} = payload
-
-    const data = await this._serivce.get(pagination, {
-      id_detail_check: id_detail_check,
-    });
+    const {pagination, filter} = payload
+    const data = await this._serivce.get(pagination, filter);
     return data;
   }
 

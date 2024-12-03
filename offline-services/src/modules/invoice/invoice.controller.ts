@@ -51,9 +51,9 @@ export class InvoiceController {
   }
 
   @MessagePattern("edit-invoice")
-  async edit(@Payload() payload: {id : number,updateInfo: InoviceEdit}) {
-    const {id, updateInfo} = payload;
-    const data = await this.invoiceService.edit(id, updateInfo);
+  async edit(@Payload() payload: {id : number,infoEdit: InoviceEdit}) {
+    const {id, infoEdit} = payload;
+    const data = await this.invoiceService.edit(id, infoEdit);
     return data;
   }
 
@@ -64,13 +64,11 @@ export class InvoiceController {
   }
 
   @MessagePattern("split-order")
-  @Post("/split-order")
   async splitOrder(@Payload() splitInvoice: SplitInvoice) {
     return await this.invoiceService.splitInvoice(splitInvoice);
   }
 
   @MessagePattern("combine-inovice")
-  @Post("/combine-inovice")
   async combineInvoice(@Payload() combineInvoice: CombineInvoice) {
     return await this.invoiceService.combineInvocie(combineInvoice);
   }
@@ -89,7 +87,7 @@ export class InvoiceController {
   }
 
   @MessagePattern("over-view")
-  async getOverView(@Query("time") time: string) {
+  async getOverView(@Payload("time") time: string) {
     const data = await this.invoiceService.getOrverView(time);
     return data;
   }

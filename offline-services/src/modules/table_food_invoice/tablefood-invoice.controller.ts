@@ -34,9 +34,9 @@ export class TablefoodInoviceController {
 
   }
   @MessagePattern("edit-tablefood-invoice")
-  async edit(@Payload()  payload :  { id: number, updateInfo: TblInvoiceEdit }) {
-    const { id, updateInfo } = payload;
-    const data = await this.tablefoodInvoiceSerivce.edit(id, updateInfo);
+  async edit(@Payload()  payload :  { id: number, infoEdit: TblInvoiceEdit }) {
+    const { id, infoEdit } = payload;
+    const data = await this.tablefoodInvoiceSerivce.edit(id, infoEdit);
     return data;
   }
 

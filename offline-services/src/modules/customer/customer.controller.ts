@@ -18,14 +18,7 @@ export class CustomerController {
 
   @MessagePattern("list-customer")
   async get(@Payload() payload: any) {
-    const {pagination, search, email} = payload;
-    let filter = {};
-    if (search) {
-      filter["name"] = { [Op.substring]: search };
-    }
-    if (email) {
-      filter["email"] = email;
-    }
+    const {pagination, filter} = payload;
     const data = await this.customerService.get(pagination, filter);
     return data;
   }

@@ -6,5 +6,6 @@ import { OfflineServiceModule } from "../offline_services.module";
   imports: [forwardRef(() => OfflineServiceModule)],
   controllers: [CheckInventoryController],
   exports: [CheckInventoryService],
+  providers: [CheckInventoryService]
 })
 export class CheckInventoryModule {}

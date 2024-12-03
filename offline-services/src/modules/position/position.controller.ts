@@ -42,7 +42,6 @@ export class PositionController {
   @MessagePattern("detail-position")
   async getById(@Payload("id", ParseIntPipe) id: string) {
     const role = await this.positionRepository.findByPk(id);
-    if (!role) throw new NotFoundException({ message: "not found role", status: false });
     return role;
   }
 
