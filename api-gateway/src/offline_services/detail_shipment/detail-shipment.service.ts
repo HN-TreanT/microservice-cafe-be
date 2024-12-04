@@ -11,14 +11,14 @@ export class DetailShipmentService {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-detail-shipment');
-    this.offlineClient.subscribeToResponseOf('detail-detail-shipment');
-    this.offlineClient.subscribeToResponseOf('create-detail-shipment');
-    this.offlineClient.subscribeToResponseOf('edit-detail-shipment');
-    this.offlineClient.subscribeToResponseOf('delete-detail-shipment');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-detail-shipment');
+  //   this.offlineClient.subscribeToResponseOf('detail-detail-shipment');
+  //   this.offlineClient.subscribeToResponseOf('create-detail-shipment');
+  //   this.offlineClient.subscribeToResponseOf('edit-detail-shipment');
+  //   this.offlineClient.subscribeToResponseOf('delete-detail-shipment');
+  //   await this.offlineClient.connect();
+  // }
   async get (pagination: any, filter: DetailShipmentFilter, order: DetailShipmentOrder) {
     const data = await this.offlineClient.send('list-detail-shipment', { pagination, filter, order }).toPromise();
     return data;

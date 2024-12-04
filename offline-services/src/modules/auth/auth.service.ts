@@ -7,15 +7,12 @@ import EmployeeReponse from "../employee/dto/employee-response.dto";
 import { JwtService } from "@nestjs/jwt";
 import { jwtContants } from "src/constants/jwtConstant";
 import InfoChangePassword from "./dto/info-change-password.dto";
-import { use } from "passport";
-import { MailService } from "src/helpers/mail/mail.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(EMPLOYEE_REPOSITORY) private readonly authRepository: typeof Employee,
     private readonly jwtService: JwtService,
-    private readonly mailService: MailService
   ) {}
   async validateUser(username: string, password: string) {
     const user = await this.authRepository.findOne({ where: { username: username } });
@@ -86,7 +83,6 @@ export class AuthService {
     const hashPassord = await bcrypt.hash(text, 10);
     user.password = hashPassord;
     await user.save();
-    await this.mailService.sendUserConfirmation(user, text);
     return true;
   }
 }

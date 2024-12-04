@@ -11,15 +11,15 @@ export class CheckInventoryService {
   ) {}
 
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-check-inventory');
-    this.offlineClient.subscribeToResponseOf('detail-check-inventory');
-    this.offlineClient.subscribeToResponseOf('create-check-inventory');
-    this.offlineClient.subscribeToResponseOf('edit-check-inventory');
-    this.offlineClient.subscribeToResponseOf('delete-check-inventory');
-    this.offlineClient.subscribeToResponseOf('check-valid-material-check-inventory');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-check-inventory');
+  //   this.offlineClient.subscribeToResponseOf('detail-check-inventory');
+  //   this.offlineClient.subscribeToResponseOf('create-check-inventory');
+  //   this.offlineClient.subscribeToResponseOf('edit-check-inventory');
+  //   this.offlineClient.subscribeToResponseOf('delete-check-inventory');
+  //   this.offlineClient.subscribeToResponseOf('check-valid-material-check-inventory');
+  //   await this.offlineClient.connect();
+  // }
 
   
   async get(pagination: any, filter: CheckInventoryFilter) {

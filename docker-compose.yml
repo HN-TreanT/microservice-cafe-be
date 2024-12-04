@@ -27,42 +27,6 @@ services:
       - zookeeper
     networks:
       - microservices_api_services
-  # zookeeper:
-  #   image: confluentinc/cp-zookeeper:latest
-  #   ports:
-  #    - "2181:2181"
-  #    - "2888:2888"
-  #    - "3888:3888"
-  #   healthcheck:
-  #     test: echo stat | nc localhost 2181
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 3
-  #   environment:
-  #    - ZOOKEEPER_SERVER_ID=1
-  #    - ZOOKEEPER_CLIENT_PORT=2181
-  #    - ZOOKEEPER_TICK_TIME=2000
-  #    - ZOOKEEPER_INIT_LIMIT=5
-  #    - ZOOKEEPER_SYNC_LIMIT=2
-  #    - ZOOKEEPER_SERVERS=zookeeper:2888:3888
-  #   networks:
-  #     - microservices_api_services
-  # kafka:
-  #   image: confluentinc/cp-kafka:latest
-  #   depends_on:
-  #     - zookeeper
-  #   ports:
-  #     - "9092:9092"
-  #   environment:
-  #     - KAFKA_LISTENERS=LISTENER_INT://kafka:29092,LISTENER_EXT://0.0.0.0:9092
-  #     - KAFKA_ADVERTISED_LISTENERS=LISTENER_INT://kafka:29092,LISTENER_EXT://localhost:9092
-  #     - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=LISTENER_INT:PLAINTEXT,LISTENER_EXT:PLAINTEXT
-  #     - KAFKA_INTER_BROKER_LISTENER_NAME=LISTENER_INT
-  #     - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-  #     - KAFKA_BROKER_ID=0
-  #   networks:
-  #     - microservices_api_services
-  
   api_gateway:
     build: 
       context: ./api-gateway
@@ -80,23 +44,41 @@ services:
       - zookeeper
     networks:
       - microservices_api_services
-  # offline_services:
-  #   build: 
-  #     context: ./offline-services
-  #     dockerfile: Dockerfile
-  #   image: offline_servieces_image
-  #   container_name: offline_services
-  #   environment:
-  #     - PORT=8080
-  #   ports: 
-  #     - "8080:8080"
-  #   volumes: 
-  #     - ./offline-services:/app
-  #   depends_on:
-  #     - kafka
-  #     - zookeeper
-  #   networks:
-  #     - microservices_api_services
+  offline_services:
+    build: 
+      context: ./offline-services
+      dockerfile: Dockerfile
+    image: offline_servieces_image
+    container_name: offline_services
+    environment:
+    - DB_HOST=database
+    - DB_PORT=3306
+    - DB_USER=root
+    - DB_PASS=hnam23012002
+    - DB_DIALECT=mysql
+    - DB_NAME_TEST=cafe
+    - DB_NAME_DEVELOPMENT=cafe
+    - DB_NAME_PRODUCTION=cafe
+    - PORT=8080
+    - NODE_ENV=production
+    - GOOGLE_CLOUD_PROJECT_ID=nestjs-398217
+    - GOOGLE_CLOUD_CLIENT_EMAIL=nestjs-398217@appspot.gserviceaccount.com
+    - GOOGLE_CLOUD_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC3GLI5xW80Qg8O\nZ4G5LfSSuBYAYBDDKrZjO124VMb+VQN/7ABQXgFqpdMw4Y7Bl7Ri+JmF/FBBFjIT\n7aKdQdOmVIPYH3CQF3klme6vM0FFHXdPLRVAWG9VRR1iCpOLAyV2zfGvEXwbvu3s\nhIh2KL0QibyP/wrVk97+vpNWSgxuQLQepozXDmamGdWqniCTZoyduMKBYrhSzAFE\nRUNheQ4ypjCHHVCLAqRpwyUcOg4RYpmNwkSOKv6U861bubsvMrzwsI0YXa/0zWP8\nmtrqWe7/c0XuWBUZpe08d10qG0XwCFSlFh5uIDanUDISFqehVFHxLIULPPJIoh0y\nuuBJkGwZAgMBAAECggEATDaP7UM09EQw/zZvhXTPEolkwxg5sftj+u85piJHyJL7\nh3JleQ6AOXO38mdZJFUw5WeEhASQJV+HTctDPoEph9kzHjGMCbZzm4a1FyFXIF1R\nDdh+uY92HEDOJ8KuQpV3MTotSUmWZvg1Ehfis4hmlm0225t2V4ubLV+HdcoR3YwE\n3uqf8uZwUqyqEWWlZsVv3x6UgWayG4db7imv3sBuhrLdLNt5IG5IubkdKINdeKtl\n/B2fG1nZA2NYlMlQBE10WmKNeOUOvym5ICdsLTZJroUQCgOIyEf9WDA11Zxmmci1\nqsR8jY9oBbdpMLTs3IULdsr7E8F9mz38bbxaWcN6pwKBgQDy5wBo8hAwcLMmoq1Y\nJoMjyy+QmaYFrl3I3NJXZc39QfGi+y/iNgCoV0MgekPFP2yxBXKXDgW/qXaYmu1F\nEkS2n3Vsk0gstQS3m9T8/jXZMHsgcIa5mW8XIxPeKnW3FHflpi57gyHyMyIGs99g\nnM6TZf1pEvA0iUu+ERxMART2XwKBgQDA+CP53dRBya2tuw/joZ2gTogXUwMi9hkZ\nn46HvEiZMeUE/jfIgc4CDzUqQNaxNhCEI4ImOI646Mq7Z1Mg4iWFradKz5TQiCMs\nVagewLq206PzGzOqOk7Hfteag+JF0B35KVlHF35/tvqK19mUMLWfk6/OqNeKoPWc\n4NAyto2AhwKBgQDso32zv/djqbfu8NcdpM9nxKA/KGEk8b1uXSsSeBzZGTB2jm4U\n3HWBixnbfyGc/XA/eUYswT16fncKrwxumSCWJf043LeYznWdBtTV8Da3s9KQRPAL\nyt3+VW8appTt2qP/+AkazSL6GTSSARSiw8FAukDJ5+hZ1lQTBApkRT2N0wKBgAHu\nee22WrmN2z8x8CbHJ1zDbHlPS2i+LeIjxrl1GQTviutR4B0Rr441uMKDg6Kid+fa\nsyLOzh7rtZvKnPpnSRjddB87lLHBqxh2gwhLxZKu66UzUIETtFYq3t2dFFa+jo4/\n67Tad1mv6zIYlwT0t9yxDcFzzzSEB/FaDrtzOFdhAoGBAMLQ9VBRyWFZ8vfw5X1K\nlGQ49BFAWY9gwUY5Hqki75xQW+l+/ZF+650460sE3wXmOhDLHFOWFQlN0FoBUOKu\npOGgPbyQOhWmEnOUEUsHMGT1KJo5ATYUWc5hh6IsGxSzuTHMGTBuKDs96ecCT90V\nXnFri3omwdkN31qCElcDjqit\n-----END PRIVATE KEY-----\n"
+    - BUCKET_NAME=nestjs-398217.appspot.com
+    - MAIL_HOST=smtp.gmail.com
+    - MAIL_USER=hoangnammta2301@gmail.com
+    - MAIL_PASS=sxczksbzbwmtfgxg
+    - MAIL_FROM=${MAIL_USER}
+    - MAIL_TRANSPORT=smtp://${MAIL_USER}:${MAIL_PASS}@$${MAIL_HOST}
+    ports: 
+      - "8080:8080"
+    volumes: 
+      - ./offline-services:/app
+    depends_on:
+      - kafka
+      - zookeeper
+    networks:
+      - microservices_api_services
 networks:
   microservices_api_services:
     driver: bridge

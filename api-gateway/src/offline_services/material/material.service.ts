@@ -10,14 +10,14 @@ export class MaterialSerivce {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-material');
-    this.offlineClient.subscribeToResponseOf('detail-material');
-    this.offlineClient.subscribeToResponseOf('create-material');
-    this.offlineClient.subscribeToResponseOf('edit-material');
-    this.offlineClient.subscribeToResponseOf('delete-material');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-material');
+  //   this.offlineClient.subscribeToResponseOf('detail-material');
+  //   this.offlineClient.subscribeToResponseOf('create-material');
+  //   this.offlineClient.subscribeToResponseOf('edit-material');
+  //   this.offlineClient.subscribeToResponseOf('delete-material');
+  //   await this.offlineClient.connect();
+  // }
   async get (pagination: any, filter: any, order: MaterialOrder) {
     const data = await this.offlineClient.send('list-material', { pagination, filter, order }).toPromise();
     return data;

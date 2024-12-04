@@ -52,7 +52,7 @@ async function bootstrap() {
       transport: Transport.KAFKA,
       options: {
         client: {
-          brokers: ['127.0.0.1:9094'],
+          brokers: ['kafka:9092'],
         },
         consumer: {
           groupId: 'offline-services-consumer',

@@ -19,6 +19,7 @@ export class CategoryController {
 
   @MessagePattern("list-category")
   async get(@Payload() payload : any) {
+    console.log("check category", payload)
     const {pagination, search} = payload
     let filter = {};
     if (search) {

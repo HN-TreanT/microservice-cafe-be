@@ -10,14 +10,14 @@ export class PromotionServices {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-promotion');
-    this.offlineClient.subscribeToResponseOf('detail-promotion');
-    this.offlineClient.subscribeToResponseOf('create-promotion');
-    this.offlineClient.subscribeToResponseOf('edit-promotion');
-    this.offlineClient.subscribeToResponseOf('delete-promotion');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-promotion');
+  //   this.offlineClient.subscribeToResponseOf('detail-promotion');
+  //   this.offlineClient.subscribeToResponseOf('create-promotion');
+  //   this.offlineClient.subscribeToResponseOf('edit-promotion');
+  //   this.offlineClient.subscribeToResponseOf('delete-promotion');
+  //   await this.offlineClient.connect();
+  // }
   async get (pagination: any, filter: PromotionFilter) {
     const data = await this.offlineClient.send('list-promotion', { pagination, filter }).toPromise();
     return data;

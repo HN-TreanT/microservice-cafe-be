@@ -20,6 +20,7 @@ import { TableModule } from "./table_food/table-food.module";
 import { TablefoodInvoiceModule } from "./table_food_invoice/tablefood-invoice.module";
 import { UserMaterialModule } from "./use_material/use_material.module";
 import { WorkshiftModule } from "./workshift/workshift.module";
+import { OfflineServiceServices } from "./offline_services.service";
 
 
 @Module({
@@ -39,15 +40,11 @@ import { WorkshiftModule } from "./workshift/workshift.module";
               }
             }
           ]),
-        CategoryModule,
-        ProductModule,
-        CheckInventoryModule, 
-        ComboModule,
-        CustomerModule,
+          ProductModule, CategoryModule, ProductModule,CheckInventoryModule, ComboModule,CustomerModule,
         DetailComboModule, DetailShipmentModule, DTCheckInventorModule, EmployeeModule, InvoiceModule, InvoiceDetailModule, PositionModule,
         MaterialModule, PromotionModule, ShipmentModule, SupplierModule, TableModule, TablefoodInvoiceModule, UserMaterialModule, WorkshiftModule],
     controllers: [],
-    providers: [],
+    providers: [OfflineServiceServices],
     exports: [ClientsModule]
 })
 

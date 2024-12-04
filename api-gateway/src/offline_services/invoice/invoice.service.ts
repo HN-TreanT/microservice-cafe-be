@@ -24,19 +24,19 @@ export class InvoiceService {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-invoice');
-    this.offlineClient.subscribeToResponseOf('detail-by-id-table');
-    this.offlineClient.subscribeToResponseOf('detail-invoice');
-    this.offlineClient.subscribeToResponseOf('create-invoice');
-    this.offlineClient.subscribeToResponseOf('edit-invoice');
-    this.offlineClient.subscribeToResponseOf('delete-invoice');
-    this.offlineClient.subscribeToResponseOf('split-order');
-    this.offlineClient.subscribeToResponseOf('combine-inovice');
-    this.offlineClient.subscribeToResponseOf('over-view');
-    this.offlineClient.subscribeToResponseOf('revenue-overview');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-invoice');
+  //   this.offlineClient.subscribeToResponseOf('detail-by-id-table');
+  //   this.offlineClient.subscribeToResponseOf('detail-invoice');
+  //   this.offlineClient.subscribeToResponseOf('create-invoice');
+  //   this.offlineClient.subscribeToResponseOf('edit-invoice');
+  //   this.offlineClient.subscribeToResponseOf('delete-invoice');
+  //   this.offlineClient.subscribeToResponseOf('split-order');
+  //   this.offlineClient.subscribeToResponseOf('combine-inovice');
+  //   this.offlineClient.subscribeToResponseOf('over-view');
+  //   this.offlineClient.subscribeToResponseOf('revenue-overview');
+  //   await this.offlineClient.connect();
+  // }
 
   async getDetailInvoiceByIdTable(id_table: any) : Promise<any>{
     const data = await this.offlineClient.send('detail-by-id-table', { id_table }).toPromise();

@@ -9,14 +9,14 @@ export class DetailComboService {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-detail-combo');
-    this.offlineClient.subscribeToResponseOf('detail-detail-combo');
-    this.offlineClient.subscribeToResponseOf('create-detail-combo');
-    this.offlineClient.subscribeToResponseOf('edit-detail-combo');
-    this.offlineClient.subscribeToResponseOf('delete-detail-combo');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-detail-combo');
+  //   this.offlineClient.subscribeToResponseOf('detail-detail-combo');
+  //   this.offlineClient.subscribeToResponseOf('create-detail-combo');
+  //   this.offlineClient.subscribeToResponseOf('edit-detail-combo');
+  //   this.offlineClient.subscribeToResponseOf('delete-detail-combo');
+  //   await this.offlineClient.connect();
+  // }
   async get (pagination: any, filter: any) {
     const data = await this.offlineClient.send('list-detail-combo', { pagination, filter }).toPromise();
     return data;

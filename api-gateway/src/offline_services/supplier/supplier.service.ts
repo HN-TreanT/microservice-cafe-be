@@ -10,14 +10,14 @@ export class SupplierSerivce {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-supplier');
-    this.offlineClient.subscribeToResponseOf('detail-supplier');
-    this.offlineClient.subscribeToResponseOf('create-supplier');
-    this.offlineClient.subscribeToResponseOf('edit-supplier');
-    this.offlineClient.subscribeToResponseOf('delete-supplier');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-supplier');
+  //   this.offlineClient.subscribeToResponseOf('detail-supplier');
+  //   this.offlineClient.subscribeToResponseOf('create-supplier');
+  //   this.offlineClient.subscribeToResponseOf('edit-supplier');
+  //   this.offlineClient.subscribeToResponseOf('delete-supplier');
+  //   await this.offlineClient.connect();
+  // }
   async get (pagination: any, search: any) {
     const data = await this.offlineClient.send('list-supplier', { pagination, search }).toPromise();
     return data;

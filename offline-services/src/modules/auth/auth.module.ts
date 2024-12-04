@@ -10,13 +10,11 @@ import { LocalStrategy } from "src/strategies/local.strategy";
 import { JwtAccessGuard } from "src/guards/jwt-access.guard";
 import JwtAccessStrategy from "src/strategies/jwt-access.strategy";
 import JwtRefreshStrategy from "src/strategies/jwt_refresh.strategy";
-import { MailModule } from "src/helpers/mail/mail.module";
 
 @Module({
   imports: [
     EmployeeModule,
     PassportModule,
-    MailModule,
     JwtModule.register({
       global: true,
       secret: jwtContants.secret,

@@ -13,7 +13,6 @@ import { StorageModule } from "./helpers/storage/storage.module";
 import { EmployeeModule } from "./modules/employee/employee.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { PositionModule } from "./modules/position/position.module";
-import { MailModule } from "./helpers/mail/mail.module";
 import { WorkshiftModule } from "./modules/workshift/workshift.module";
 import { EmployeeWorkShiftModule } from "./modules/employee_workshift/employee_workshift.module";
 import { PromotionModule } from "./modules/promotion/promotion.module";
@@ -89,7 +88,7 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
     EmployeeModule,
     AuthModule,
     PositionModule,
-    MailModule,
+    // MailModule,
     WorkshiftModule,
     EmployeeWorkShiftModule,
     EmployeeModule,

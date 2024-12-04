@@ -18,7 +18,6 @@ export class ComboController {
     if (search) {
       filter["name"] = { [Op.substring]: search };
     }
-    console.log(filter["email"]);
     const data = await this.comboService.get(pagination, filter);
     return data;
   }

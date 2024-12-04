@@ -5,8 +5,8 @@ import { OfflineServiceModule } from "../offline_services.module";
 
 @Module({
   imports: [forwardRef(() => OfflineServiceModule)],
-  providers: [ComboService],
   controllers: [ComboController],
-  exports: [ComboService],
+  providers: [ComboService],
+  exports: [],
 })
 export class ComboModule {}

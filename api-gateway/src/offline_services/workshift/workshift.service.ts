@@ -8,32 +8,32 @@ export class WorkshiftServices {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-category');
-    this.offlineClient.subscribeToResponseOf('detail-category');
-    this.offlineClient.subscribeToResponseOf('create-category');
-    this.offlineClient.subscribeToResponseOf('edit-category');
-    this.offlineClient.subscribeToResponseOf('delete-category');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-workshift');
+  //   this.offlineClient.subscribeToResponseOf('detail-workshift');
+  //   this.offlineClient.subscribeToResponseOf('create-workshift');
+  //   this.offlineClient.subscribeToResponseOf('edit-workshift');
+  //   this.offlineClient.subscribeToResponseOf('delete-workshift');
+  //   await this.offlineClient.connect();
+  // }
   async get () {
-    const data = await this.offlineClient.send('list-category', {}).toPromise();
+    const data = await this.offlineClient.send('list-workshift', {}).toPromise();
     return data;
   }
 
   async getById (id: number) {
-    const response = await this.offlineClient.send('detail-category', { id }).toPromise()
-    if (!response) throw new NotFoundException({ message: "not found category", status: 404 })
+    const response = await this.offlineClient.send('detail-workshift', { id }).toPromise()
+    if (!response) throw new NotFoundException({ message: "not found workshift", status: 404 })
     return response
   }
 
   async create (createInfo: WorkshiftCreate) {
-    const response = await this.offlineClient.send('create-category', JSON.stringify(createInfo)).toPromise();
+    const response = await this.offlineClient.send('create-workshift', JSON.stringify(createInfo)).toPromise();
     return response
   }
 
   async edit (id: number, infoEdit: WorkshiftCreate) {
-    const response = await this.offlineClient.send('edit-category', {
+    const response = await this.offlineClient.send('edit-workshift', {
       id: id,
       infoEdit: infoEdit
     }).toPromise();
@@ -41,7 +41,7 @@ export class WorkshiftServices {
   }
 
   async deleteById (id: number) {
-    const response = await this.offlineClient.send('delete-category', {id}).toPromise();
+    const response = await this.offlineClient.send('delete-workshift', {id}).toPromise();
     return response
   }
 }

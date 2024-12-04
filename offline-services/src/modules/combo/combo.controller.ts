@@ -19,12 +19,8 @@ export class ComboController {
 
   @MessagePattern("list-combo")
   async get(@Payload() payload: any) {
-    const {pagination, search} = payload;
-    let filter = {};
-    if (search) {
-      filter["name"] = { [Op.substring]: search };
-    }
-    console.log(filter["email"]);
+
+    const {pagination, filter} = payload;
     const data = await this.comboService.get(pagination, filter);
     return data;
   }

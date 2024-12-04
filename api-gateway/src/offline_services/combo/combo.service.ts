@@ -10,15 +10,15 @@ export class ComboService {
   ) {}
 
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-combo');
-    this.offlineClient.subscribeToResponseOf('detail-combo');
-    this.offlineClient.subscribeToResponseOf('create-combo');
-    this.offlineClient.subscribeToResponseOf('edit-combo');
-    this.offlineClient.subscribeToResponseOf('delete-combo');
-    this.offlineClient.subscribeToResponseOf('check-valid-material-combo');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-combo');
+  //   this.offlineClient.subscribeToResponseOf('detail-combo');
+  //   this.offlineClient.subscribeToResponseOf('create-combo');
+  //   this.offlineClient.subscribeToResponseOf('edit-combo');
+  //   this.offlineClient.subscribeToResponseOf('delete-combo');
+  //   this.offlineClient.subscribeToResponseOf('check-valid-material-combo');
+  //   await this.offlineClient.connect();
+  // }
 
   async get(pagination: any, filter: any) {
     const data = await this.offlineClient.send('list-combo', { pagination, filter}).toPromise();

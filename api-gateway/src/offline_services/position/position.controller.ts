@@ -22,13 +22,13 @@ export class PositionController {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-position');
-    this.offlineClient.subscribeToResponseOf('detail-position');
-    this.offlineClient.subscribeToResponseOf('create-position');
-    this.offlineClient.subscribeToResponseOf('delete-position');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-position');
+  //   this.offlineClient.subscribeToResponseOf('detail-position');
+  //   this.offlineClient.subscribeToResponseOf('create-position');
+  //   this.offlineClient.subscribeToResponseOf('delete-position');
+  //   await this.offlineClient.connect();
+  // }
 
   @Post("/")
   async create(@Body() positionCreate: PositionCreate) {

@@ -9,14 +9,14 @@ export class EmployeeService {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    this.offlineClient.subscribeToResponseOf('list-employee');
-    this.offlineClient.subscribeToResponseOf('detail-employee');
-    this.offlineClient.subscribeToResponseOf('create-employee');
-    this.offlineClient.subscribeToResponseOf('edit-employee');
-    this.offlineClient.subscribeToResponseOf('delete-employee');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   this.offlineClient.subscribeToResponseOf('list-employee');
+  //   this.offlineClient.subscribeToResponseOf('detail-employee');
+  //   this.offlineClient.subscribeToResponseOf('create-employee');
+  //   this.offlineClient.subscribeToResponseOf('edit-employee');
+  //   this.offlineClient.subscribeToResponseOf('delete-employee');
+  //   await this.offlineClient.connect();
+  // }
   async get (pagination: any, filter: EmployeeFilter) {
     const data = await this.offlineClient.send('list-employee', { pagination, filter }).toPromise();
     return data;

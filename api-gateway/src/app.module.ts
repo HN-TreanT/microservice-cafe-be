@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OfflineServiceModule } from './offline_services/offline_services.module';
@@ -7,6 +7,7 @@ import { AllExceptionFilter } from './filter/exception.filter';
 import { TransformInterceptor } from './Interceptors/tranform.interceptor';
 import { LoggerModule } from './logger/logger.module';
 import { ConfigModule } from '@nestjs/config';
+import { PaginationMiddleware } from './middleware/pagination.middleware';
 
 @Module({
   imports: [OfflineServiceModule, LoggerModule, ConfigModule.forRoot({ isGlobal: true }),],
@@ -24,4 +25,8 @@ import { ConfigModule } from '@nestjs/config';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(PaginationMiddleware).forRoutes({ path: "*", method: RequestMethod.GET });
+  }
+}

@@ -9,15 +9,15 @@ export class DtCheckInventorService {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  async onModuleInit() {
-    console.log("check init")
-    this.offlineClient.subscribeToResponseOf('list-check-inventor');
-    this.offlineClient.subscribeToResponseOf('detail-check-inventor');
-    this.offlineClient.subscribeToResponseOf('create-check-inventor');
-    this.offlineClient.subscribeToResponseOf('edit-check-inventor');
-    this.offlineClient.subscribeToResponseOf('delete-check-inventor');
-    await this.offlineClient.connect();
-  }
+  // async onModuleInit() {
+  //   console.log("check init")
+  //   this.offlineClient.subscribeToResponseOf('list-check-inventor');
+  //   this.offlineClient.subscribeToResponseOf('detail-check-inventor');
+  //   this.offlineClient.subscribeToResponseOf('create-check-inventor');
+  //   this.offlineClient.subscribeToResponseOf('edit-check-inventor');
+  //   this.offlineClient.subscribeToResponseOf('delete-check-inventor');
+  //   await this.offlineClient.connect();
+  // }
   async get (pagination: any, filter: any) {
     const data = await this.offlineClient.send('list-check-inventor', { pagination, filter }).toPromise();
     return data;
