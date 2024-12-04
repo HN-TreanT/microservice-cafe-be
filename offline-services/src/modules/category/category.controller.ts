@@ -20,11 +20,7 @@ export class CategoryController {
   @MessagePattern("list-category")
   async get(@Payload() payload : any) {
     console.log("check category", payload)
-    const {pagination, search} = payload
-    let filter = {};
-    if (search) {
-      filter["name"] = { [Op.substring]: search };
-    }
+    const {pagination, filter} = payload
     const data = await this.categoryService.get(pagination, filter);
     return data
   }

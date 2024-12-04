@@ -8,9 +8,10 @@ import { TransformInterceptor } from './Interceptors/tranform.interceptor';
 import { LoggerModule } from './logger/logger.module';
 import { ConfigModule } from '@nestjs/config';
 import { PaginationMiddleware } from './middleware/pagination.middleware';
+import { AuthModule } from './auth_services/auth.module';
 
 @Module({
-  imports: [OfflineServiceModule, LoggerModule, ConfigModule.forRoot({ isGlobal: true }),],
+  imports: [AuthModule, OfflineServiceModule, LoggerModule, ConfigModule.forRoot({ isGlobal: true }),],
   controllers: [AppController],
   providers: [
     AppService,

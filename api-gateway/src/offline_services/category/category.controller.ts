@@ -6,16 +6,20 @@ import { Op } from "sequelize";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { CategoryDto } from "./dto/category-dto.dto";
 import { PaginationGuard } from "src/guards/pagination.guard";
+import { PermissionGuard } from "src/guards/check-permission.guard";
+import { Permissions } from "src/decorator/permission.decorator";
 
 
 @Controller("category")
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService ) {}
 
-  @UseGuards(PaginationGuard)
+  @Permissions("view_category")
+  @UseGuards(PermissionGuard)
   @Get("/")
   async get(@Req() req: any, @Query("search") search: string) {
     const pagination = req.pagination;
+    console.log(pagination)
     let filter = {};
     if (search) {
       filter["name"] = { [Op.substring]: search };

@@ -44,6 +44,18 @@ services:
       - zookeeper
     networks:
       - microservices_api_services
+  database_offline_services:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=cafe
+      - MYSQL_ROOT_PASSWORD=hnam23012002
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./offline-services/database:/var/lib/mysql
+    networks:
+      - microservices_api_services
   offline_services:
     build: 
       context: ./offline-services
@@ -51,7 +63,7 @@ services:
     image: offline_servieces_image
     container_name: offline_services
     environment:
-    - DB_HOST=database
+    - DB_HOST=database_offline_services
     - DB_PORT=3306
     - DB_USER=root
     - DB_PASS=hnam23012002

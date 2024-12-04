@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import RegisterInfo from "./dto/register-info";
-import { LocalAuthGuard } from "src/guards/local.guard";
+// import { LocalAuthGuard } from "src/guards/local.guard";
 import InfoChangePassword from "./dto/info-change-password.dto";
-import { JwtRefreshGuard } from "src/guards/jwt-refresh.guard";
+// import { JwtRefreshGuard } from "src/guards/jwt-refresh.guard";
 import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags('auth')
@@ -15,10 +15,11 @@ export class AuthController {
   async register(@Body() registerInfo: RegisterInfo) {
     return this.authService.register(registerInfo);
   }
-  @UseGuards(LocalAuthGuard)
+  // @UseGuards(LocalAuthGuard)
   @Post("/login")
-  async signIn(@Req() req: any) {
-    return this.authService.signIn(req.user);
+  async signIn(@Body() payload: any) {
+    const {username, password}  = payload
+    return this.authService.signIn(username, password);
   }
 
   @Post("/change-password")
@@ -27,7 +28,7 @@ export class AuthController {
   }
 
   @Post("/refresh")
-  @UseGuards(JwtRefreshGuard)
+  // @UseGuards(JwtRefreshGuard)
   async refresh(@Req() req: any) {
     const user = req.user;
     return this.authService.refresh(user);

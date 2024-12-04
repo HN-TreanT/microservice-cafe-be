@@ -21,6 +21,7 @@ import { TablefoodInvoiceModule } from "./table_food_invoice/tablefood-invoice.m
 import { UserMaterialModule } from "./use_material/use_material.module";
 import { WorkshiftModule } from "./workshift/workshift.module";
 import { OfflineServiceServices } from "./offline_services.service";
+import { AuthModule } from "src/auth_services/auth.module";
 
 
 @Module({
