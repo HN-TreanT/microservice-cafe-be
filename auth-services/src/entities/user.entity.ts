@@ -3,7 +3,6 @@ import { AutoIncrement, Table, Model, PrimaryKey, Column, DataType, Unique, Belo
 import { Role } from "./role.entity";
 
 @Table({tableName: "user"})
-
 export class User extends Model<User> {
     @PrimaryKey
     @AutoIncrement

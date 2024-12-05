@@ -8,7 +8,7 @@ export const databaseConfig: IDatabaseConfig = {
    development: {
     username: "root",
     password: "hnam23012002",
-    database: "auth_service",
+    database: "online_services",
     host: "127.0.0.1",
     port: 3306,
     dialect: "mysql",

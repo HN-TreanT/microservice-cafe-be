@@ -2,6 +2,12 @@ import { Sequelize } from "sequelize-typescript";
 
 import { SEQUELIZE, DEVELOPMENT, TEST, PRODUCTION } from "../constants";
 import { databaseConfig } from "./database.config";
+import { CustomerAddress } from "src/entities/customer_address.entity";
+import { Customer } from "src/entities/customer.entity";
+import { OrderDetail } from "src/entities/order_detail.entity";
+import { Order } from "src/entities/order.entity";
+import { Payment } from "src/entities/payment.entity";
+import { ShipmentOnline } from "src/entities/shipment_online.entity";
 
 
 export const databaseProviders = [
@@ -25,7 +31,7 @@ export const databaseProviders = [
       }
       const sequelize = new Sequelize(config);
       sequelize.addModels([
-       
+         CustomerAddress, Customer, OrderDetail, Order, Payment, ShipmentOnline
       ]);
       // await sequelize.sync({force: true});
       return sequelize;
