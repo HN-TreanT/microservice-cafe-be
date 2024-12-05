@@ -45,7 +45,8 @@ services:
     networks:
       - microservices_api_services
   database_offline_services:
-    image: mysql:8.0
+    # image: mysql:8.0
+    image: mysql:5.7
     restart: always
     environment:
       - MYSQL_DATABASE=cafe
@@ -90,7 +91,8 @@ services:
       - microservices_api_services
 
   database_auth_services:
-    image: mysql:8.0
+    # image: mysql:8.0
+    image: mysql:5.7
     restart: always
     environment:
       - MYSQL_DATABASE=auth_service
