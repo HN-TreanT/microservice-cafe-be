@@ -8,14 +8,6 @@ export class TableFoodService {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-  // async onModuleInit() {
-  //   this.offlineClient.subscribeToResponseOf('list-table-food');
-  //   this.offlineClient.subscribeToResponseOf('detail-table-food');
-  //   this.offlineClient.subscribeToResponseOf('create-table-food');
-  //   this.offlineClient.subscribeToResponseOf('edit-table-food');
-  //   this.offlineClient.subscribeToResponseOf('delete-table-food');
-  //   await this.offlineClient.connect();
-  // }
   async get (pagination: any, filter: any) {
     const data = await this.offlineClient.send('list-table-food', { pagination, filter }).toPromise();
     return data;

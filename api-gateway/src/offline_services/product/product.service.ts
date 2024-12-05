@@ -11,17 +11,6 @@ export class ProductServices {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-
-  // async onModuleInit() {
-  //   this.offlineClient.subscribeToResponseOf('list-product');
-  //   this.offlineClient.subscribeToResponseOf('detail-product');
-  //   this.offlineClient.subscribeToResponseOf('create-product');
-  //   this.offlineClient.subscribeToResponseOf('edit-product');
-  //   this.offlineClient.subscribeToResponseOf('delete-product');
-  //   this.offlineClient.subscribeToResponseOf('check-valid-material-product');
-  //   await this.offlineClient.connect();
-  // }
-
   async get(pagination: any, filter: ProductFilter, order: ProductOrder) {
     const data = await this.offlineClient.send('list-product', { pagination, filter, order }).toPromise();
     return data;

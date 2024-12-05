@@ -9,15 +9,6 @@ export class InvoiceDetailService {
   constructor(
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
-
-  // async onModuleInit() {
-  //   this.offlineClient.subscribeToResponseOf('list-invoice-detail');
-  //   this.offlineClient.subscribeToResponseOf('detail-invoice-detail');
-  //   this.offlineClient.subscribeToResponseOf('create-invoice-detail');
-  //   this.offlineClient.subscribeToResponseOf('edit-invoice-detail');
-  //   this.offlineClient.subscribeToResponseOf('delete-invoice-detail');
-  //   await this.offlineClient.connect();
-  // }
   async get (pagination: any, filter: DtInvoiceFilter) {
     const data = await this.offlineClient.send('list-invoice-detail', { pagination, filter }).toPromise();
     return data;

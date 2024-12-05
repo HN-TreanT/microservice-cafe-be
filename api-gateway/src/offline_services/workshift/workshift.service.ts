@@ -7,15 +7,6 @@ export class WorkshiftServices {
   constructor(
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
-
-  // async onModuleInit() {
-  //   this.offlineClient.subscribeToResponseOf('list-workshift');
-  //   this.offlineClient.subscribeToResponseOf('detail-workshift');
-  //   this.offlineClient.subscribeToResponseOf('create-workshift');
-  //   this.offlineClient.subscribeToResponseOf('edit-workshift');
-  //   this.offlineClient.subscribeToResponseOf('delete-workshift');
-  //   await this.offlineClient.connect();
-  // }
   async get () {
     const data = await this.offlineClient.send('list-workshift', {}).toPromise();
     return data;

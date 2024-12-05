@@ -8,16 +8,6 @@ export class CustomerService {
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
 
-
-  // async onModuleInit() {
-  //   this.offlineClient.subscribeToResponseOf('list-customer');
-  //   this.offlineClient.subscribeToResponseOf('detail-customer');
-  //   this.offlineClient.subscribeToResponseOf('create-customer');
-  //   this.offlineClient.subscribeToResponseOf('edit-customer');
-  //   this.offlineClient.subscribeToResponseOf('delete-customer');
-  //   await this.offlineClient.connect();
-  // }
-
   async get(pagination: any, filter: any) {
     const data = await this.offlineClient.send('list-customer', { pagination, filter}).toPromise();
     return data;

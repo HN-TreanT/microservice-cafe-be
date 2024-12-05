@@ -7,15 +7,6 @@ export class ShipmentService {
   constructor(
     @Inject('OFFLINE_SERVICES') private readonly offlineClient: ClientKafka
   ) {}
-
-  // async onModuleInit() {
-  //   this.offlineClient.subscribeToResponseOf('list-shipment');
-  //   this.offlineClient.subscribeToResponseOf('detail-shipment');
-  //   this.offlineClient.subscribeToResponseOf('create-shipment');
-  //   this.offlineClient.subscribeToResponseOf('edit-shipment');
-  //   this.offlineClient.subscribeToResponseOf('delete-shipment');
-  //   await this.offlineClient.connect();
-  // }
   async get (pagination: any, search: any) {
     const data = await this.offlineClient.send('list-shipment', { pagination, search }).toPromise();
     return data;

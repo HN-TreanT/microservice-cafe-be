@@ -14,10 +14,15 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import {  readFileSync } from "fs";
 import { join } from "path";
 import { Response } from "express";
+import { Permissions } from "src/decorator/permission.decorator";
+import { PermissionGuard } from "src/guards/check-permission.guard";
 @Controller("invoice")
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
+
+  @Permissions("view_invoice")
+  @UseGuards(PermissionGuard)
   @Get("/")
   async get(@Req() req: any, @Query() filter: FilterDto, @Query() order: OrderInvoiceDto) {
     const pagination = req.pagination;
@@ -25,65 +30,87 @@ export class InvoiceController {
     return data;
   }
 
+  @Permissions("view_invoice")
+  @UseGuards(PermissionGuard)
   @Get("/detail-by-id-table/:id_table")
   async getDetailInvoiceByIdTable(@Param("id_table") id_table: any,) {
     const data = await this.invoiceService.getDetailInvoiceByIdTable(id_table);
     return data;
   }
 
+  @Permissions("view_invoice")
+  @UseGuards(PermissionGuard)
   @Get("/:id")
   async getById(@Param("id") id: number) {
     const data = await this.invoiceService.getById(id);
     return data;
   }
 
+  @Permissions("create_invoice")
+  @UseGuards(PermissionGuard)
   @Post()
   async create(@Body() createInfo: InvoiceCreate) {
     const data = await this.invoiceService.create(createInfo);
     return data;
   }
+
+  @Permissions("edit_invoice")
+  @UseGuards(PermissionGuard)
   @Put("/:id")
   async edit(@Param("id") id: number, @Body() infoEdit: InoviceEdit) {
     const data = await this.invoiceService.edit(id, infoEdit);
     return data;
   }
 
+  @Permissions("delete_invoice")
+  @UseGuards(PermissionGuard)
   @Delete("/:id")
   async deleteById(@Param("id") id: number) {
     await this.invoiceService.deleteById(id);
     return true;
   }
+
+  @Permissions("edit_invoice")
+  @UseGuards(PermissionGuard)
   @Post("/split-order")
   async splitOrder(@Body() splitInvoice: SplitInvoice) {
     return await this.invoiceService.splitInvoice(splitInvoice);
   }
+
+  @Permissions("edit_invoice")
+  @UseGuards(PermissionGuard)
   @Post("/combine-inovice")
   async combineInvoice(@Body() combineInvoice: CombineInvoice) {
     return await this.invoiceService.combineInvocie(combineInvoice);
   }
 
+
+  @Permissions("edit_invoice")
+  @UseGuards(PermissionGuard)
   @Post("/payment/:invoice_id")
   async payment(@Param("invoice_id") invoice_id: number, @Body() paymentInfo: Payment) {
     console.log(invoice_id);
     return await this.invoiceService.payment(invoice_id, paymentInfo);
   }
 
+  @Permissions("edit_invoice")
+  @UseGuards(PermissionGuard)
   @Get("/complete-invoice/:id")
   async test(@Param("id") id: number) {
     const data = await this.invoiceService.completeInvocie(id);
     return data;
   }
 
-  @ApiBearerAuth()
-  // @UseGuards(JwtAccessGuard)
+  @Permissions("view_invoice")
+  @UseGuards(PermissionGuard)
   @Get("/over-view/get")
   async getOverView(@Query("time") time: string) {
     const data = await this.invoiceService.getOrverView(time);
     return data;
   }
 
-  @ApiBearerAuth()
-  // @UseGuards(JwtAccessGuard)
+  @Permissions("view_invoice")
+  @UseGuards(PermissionGuard)
   @Get("/over-view/revenue-overview")
   async getRevenueOverview() {
     const data = await this.invoiceService.getRevenueOverview();

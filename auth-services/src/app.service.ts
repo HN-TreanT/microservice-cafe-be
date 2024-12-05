@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { PEMISSION_ROLE_REPOSITORY, USER_REPOSITORY } from './constants/repository_enum';
+import { PEMISSION_ROLE_REPOSITORY, ROLE_REPOSITORY, USER_REPOSITORY } from './constants/repository_enum';
 import { User } from './entities/user.entity';
 import * as bcrypt from "bcryptjs";
 import { JwtService } from '@nestjs/jwt';
@@ -7,12 +7,15 @@ import RegisterInfo from './dto/register-info';
 import { jwtContants } from './constants/jwtConstant';
 import InfoChangePassword from './dto/info-change-password.dto';
 import { PermissionRole } from './entities/permission_role.entity';
+import { Role } from './entities/role.entity';
+import RoleDTO from './dto/rol-dto';
 
 @Injectable()
 export class AppService {
   constructor(
     @Inject(USER_REPOSITORY) private readonly authRepository: typeof User,
     @Inject(PEMISSION_ROLE_REPOSITORY) private readonly permisionRoleReposity: typeof PermissionRole,
+    @Inject(ROLE_REPOSITORY) private readonly roleRepository: typeof Role,
     private readonly jwtService: JwtService,
   ) {}
   async validateUser(username: string, password: string) {
@@ -67,8 +70,40 @@ export class AppService {
   }
 
   async refresh(payload: any) {
-    const access_token = await this.jwtService.signAsync(payload);
-    return access_token;
+    try {
+      const {refresh_token} = payload;
+      if (!refresh_token) {
+        return {
+          status: 401,
+          message: "refresh token invalid",
+        }
+      }
+      const verify_refresh_token = await this.jwtService.verifyAsync(refresh_token, {
+        secret: jwtContants.refreshToken_secret
+      })
+      if (!verify_refresh_token) {
+        return {
+          status: 401,
+          message: "Token invalid or expired",
+         }
+      }
+      const payload_access = {
+        username: verify_refresh_token["username"],
+        id_role: verify_refresh_token["id_role"]
+      }
+      const access_token = await this.jwtService.signAsync(payload_access);
+      return {
+        status: 200,
+        message: "success",
+        access_token: access_token
+      };
+    } catch (err) {
+      console.log(err)
+      return {
+        status: 401,
+        message: "Token invalid or expired",
+       }
+    }
   }
 
   async checkPermissions(token: string, permission: string) {
@@ -78,6 +113,12 @@ export class AppService {
       })
       const id_role = payload["id_role"]
 
+      if (id_role === "A") {
+        return {
+          status: 200,
+          message: "access"
+        }
+      }
       const permisionRole = await this.permisionRoleReposity.findAll({where: {id_role: id_role}})
       const permissions: string[] = permisionRole.map((item) => item.id_permistion )
 
@@ -103,6 +144,27 @@ export class AppService {
 
   }
 
+  async listRole() {
+     const list = await this.roleRepository.findAll()
+     return list
+  }
+
+  async createRole(dto : RoleDTO) {
+    const role = await this.roleRepository.create(dto);
+    return role.get()
+  }
+
+  async deleteRole(id : string) {
+    await this.roleRepository.destroy({ where: { id: id } });
+    return true;
+  }
+
+  async editRole(dto : RoleDTO) {
+     const role = await this.roleRepository.findByPk(dto.id);
+     if (!role) throw new NotFoundException({ message: "not found role", status: false });
+     await role.update(dto);
+     return role.get();
+  }
 }
 
 
