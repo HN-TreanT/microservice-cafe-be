@@ -21,7 +21,6 @@ import { TablefoodInvoiceModule } from "./table_food_invoice/tablefood-invoice.m
 import { UserMaterialModule } from "./use_material/use_material.module";
 import { WorkshiftModule } from "./workshift/workshift.module";
 import { OfflineServiceServices } from "./offline_services.service";
-import { AuthModule } from "src/auth_services/auth.module";
 
 
 @Module({
@@ -33,7 +32,8 @@ import { AuthModule } from "src/auth_services/auth.module";
               options: {
                 client: {
                   clientId: 'offline-services',
-                  brokers: ['kafka:9092'],
+                  // brokers: ['kafka:9092'],
+                  brokers: [`${process.env.KAFKA_HOST}:${process.env.KAFKA_PORT}`],
                 },
                 consumer: {
                   groupId: 'offline-services-consumer',
