@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: api_gate_way_image
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_HOST
+          # value: "kafka"
+          value: kafka.kafka.svc.cluster.local
+        volumeMounts:
+        - name: app-volume
+          mountPath: /app
+        - name: node-modules
+          mountPath: /app/node_modules
+      volumes:
+      - name: app-volume
+        persistentVolumeClaim:
+          claimName: api-gateway-pvc
+      - name: node-modules
+        emptyDir: {}
