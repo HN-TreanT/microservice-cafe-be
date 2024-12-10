@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: mysql:5.7  # Use MySQL 5.7 image
+          image: mysql:5.7 
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: hnam23012002  # Set your root password
+              value: hnam23012002 
             - name: MYSQL_DATABASE
-              value: cafe  # Set the database name
+              value: cafe  
           ports:
             - containerPort: 3306
           volumeMounts:

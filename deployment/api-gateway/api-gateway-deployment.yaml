@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: api_gate_way_image
+        image: hntreant/api_gate_way_image
         ports:
         - containerPort: 8080
         env:
@@ -25,13 +25,19 @@ spec:
         - name: KAFKA_PORT
           value: "9092"
         - name: KAFKA_HOST
-          # value: "kafka"
           value: kafka.kafka.svc.cluster.local
         volumeMounts:
         - name: app-volume
           mountPath: /app
         - name: node-modules
           mountPath: /app/node_modules
+        resources:
+          requests:
+            memory: "500Mi"  
+            cpu: "500m"   
+          limits:
+            memory: "1Gi"  
+            cpu: "1"     
       volumes:
       - name: app-volume
         persistentVolumeClaim:
