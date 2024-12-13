@@ -30,14 +30,7 @@ spec:
         - name: app-volume
           mountPath: /app
         - name: node-modules
-          mountPath: /app/node_modules
-        resources:
-          requests:
-            memory: "500Mi"  
-            cpu: "500m"   
-          limits:
-            memory: "1Gi"  
-            cpu: "1"     
+          mountPath: /app/node_modules  
       volumes:
       - name: app-volume
         persistentVolumeClaim:

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: online-service
+  labels:
+    app: online-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: online-service
+  template:
+    metadata:
+      labels:
+        app: online-service
+    spec:
+      containers:
+      - name: online-service
+        image: hntreant/online_servieces_image
+        ports:
+        - containerPort: 9002
+        env:
+        - name: PORT
+          value: "9002"
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_HOST
+          value: kafka.kafka.svc.cluster.local
+        - name: DB_HOST
+          value: "database_auth_services"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASS
+          value: "hnam23012002"
+        - name: DB_DIALECT
+          value: "mysql"
+        - name: DB_NAME_DEVELOPMENT
+          value: "online_service"
+        - name: DB_NAME_PRODUCTION
+          value: "online_service"
+        - name: NODE_ENV
+          value: "production"
+        volumeMounts:
+        - name: app-volume
+          mountPath: /app
+        - name: node-modules
+          mountPath: /app/node_modules  
+      volumes:
+      - name: app-volume
+        persistentVolumeClaim:
+          claimName: online-service-pvc
+      - name: node-modules
+        emptyDir: {}
