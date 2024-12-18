@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { PEMISSION_ROLE_REPOSITORY, ROLE_REPOSITORY, USER_REPOSITORY } from './constants/repository_enum';
+import { PEMISSION_ROLE_REPOSITORY, PERMISSION_REPOSITORY, ROLE_REPOSITORY, USER_REPOSITORY } from './constants/repository_enum';
 import { User } from './entities/user.entity';
 import * as bcrypt from "bcryptjs";
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +9,9 @@ import InfoChangePassword from './dto/info-change-password.dto';
 import { PermissionRole } from './entities/permission_role.entity';
 import { Role } from './entities/role.entity';
 import RoleDTO from './dto/rol-dto';
+import { Permission } from './entities/permission.entity';
+import { Op, Sequelize } from "sequelize";
+import PermissionRoleDTO from './dto/permission-role.dto';
 
 @Injectable()
 export class AppService {
@@ -16,6 +19,7 @@ export class AppService {
     @Inject(USER_REPOSITORY) private readonly authRepository: typeof User,
     @Inject(PEMISSION_ROLE_REPOSITORY) private readonly permisionRoleReposity: typeof PermissionRole,
     @Inject(ROLE_REPOSITORY) private readonly roleRepository: typeof Role,
+    @Inject(PERMISSION_REPOSITORY) private readonly permissionRepository: typeof Permission,
     private readonly jwtService: JwtService,
   ) {}
   async validateUser(username: string, password: string) {
@@ -58,7 +62,12 @@ export class AppService {
     });
     user.refresh_token = refresh_token;
     await user.save();
-    return { ...user.dataValues, access_token };
+
+    //get permission
+    const permisionRole = await this.permisionRoleReposity.findAll({where: {id_role: user.id_role}})
+    const permissions: string[] = permisionRole.map((item) => item.id_permistion )
+
+    return { ...user.dataValues, access_token, permissions: permissions };
 
   }
 
@@ -121,7 +130,6 @@ export class AppService {
       }
       const permisionRole = await this.permisionRoleReposity.findAll({where: {id_role: id_role}})
       const permissions: string[] = permisionRole.map((item) => item.id_permistion )
-
       if (permissions.includes(permission)) {
         return {
           status: 200,
@@ -164,6 +172,82 @@ export class AppService {
      if (!role) throw new NotFoundException({ message: "not found role", status: false });
      await role.update(dto);
      return role.get();
+  }
+  
+  async getAllPermission() {
+      const permissions = await this.permissionRepository.findAll();
+      const groupedPermissions = permissions.reduce((acc, permission) => {
+        const type = permission.type; 
+        if (!acc[type]) {
+            acc[type] = []; 
+        }
+        acc[type].push(permission); 
+        return acc;
+      }, {});
+       return groupedPermissions
+  }
+
+  async getAllPermisionRole(id : string) {
+    const permisionRole = await this.permisionRoleReposity.findAll({where: {id_role: id}})
+    const permissions: string[] = permisionRole.map((item) => item.id_permistion )
+    return permissions
+  }
+
+  async editPermisionRole(dto : PermissionRoleDTO) {
+     if (dto.permissions.length < 0) {
+       return false
+     }
+     await this.permisionRoleReposity.destroy({where: {id_role: dto.id_role}})
+     const rolePermission = dto.permissions.map((item) => {
+      return {
+        id_role: dto.id_role,
+        id_permistion: item
+      }
+     })
+     await this.permisionRoleReposity.bulkCreate(rolePermission)  
+     return true
+  }
+
+  async getUser(pagination: any, filter: any) {
+    const { count, rows } = await this.authRepository.findAndCountAll({
+      attributes: {
+        exclude: ["password"],
+      },
+      where: { ...filter },
+      ...pagination,
+      include: [
+        {
+          model: Role
+        }
+      ]
+    });
+
+    return {
+      count: count, 
+      data: rows
+    }
+
+  }
+
+  async editUser(dto: RegisterInfo) {
+    const user = await this.authRepository.findOne({where: {username: dto.username}})
+    if (user == null) {
+      return null
+    }
+    user.id_role = dto.id_role
+    user.name = dto.name
+    user.save()
+    return user.get()
+  }
+
+  async deleteUser(id: any) {
+    const user = await this.authRepository.findByPk(id)
+    if (!user) {
+      return false
+    }
+    await user.destroy()
+    return true
+
   }
 }
 

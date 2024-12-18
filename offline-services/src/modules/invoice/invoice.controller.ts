@@ -75,15 +75,16 @@ export class InvoiceController {
 
   @MessagePattern("payment")
   async payment(@Payload() payload : { invoice_id: number,paymentInfo: Payment}) {
-
     const {invoice_id, paymentInfo} = payload
     return await this.invoiceService.payment(invoice_id, paymentInfo);
   }
 
   @MessagePattern("complete-invoice")
   async test(@Payload("id") id: number) {
+    console.log("check complete invoice", id)
     const data = await this.invoiceService.completeInvocie(id);
     return data;
+    return true
   }
 
   @MessagePattern("over-view")

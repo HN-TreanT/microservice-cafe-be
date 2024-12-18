@@ -407,6 +407,7 @@ export class InvoiceService {
   }
 
   async completeInvocie(id_invoice: number) {
+    console.log("check", id_invoice)
     const invoice = await this.invoiceRepository.findByPk(id_invoice);
     if (!invoice) throw new NotFoundException({ message: "not found invoice ", status: true });
     const detail_inovices = await this.invoiceDetaiRepository.findAll({

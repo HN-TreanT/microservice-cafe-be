@@ -21,6 +21,7 @@ import { TablefoodInvoiceModule } from "./table_food_invoice/tablefood-invoice.m
 import { UserMaterialModule } from "./use_material/use_material.module";
 import { WorkshiftModule } from "./workshift/workshift.module";
 import { OfflineServiceServices } from "./offline_services.service";
+import { EventGateway } from "./event.gateway";
 
 
 @Module({
@@ -45,7 +46,7 @@ import { OfflineServiceServices } from "./offline_services.service";
         DetailComboModule, DetailShipmentModule, DTCheckInventorModule, EmployeeModule, InvoiceModule, InvoiceDetailModule, PositionModule,
         MaterialModule, PromotionModule, ShipmentModule, SupplierModule, TableModule, TablefoodInvoiceModule, UserMaterialModule, WorkshiftModule],
     controllers: [],
-    providers: [OfflineServiceServices],
+    providers: [OfflineServiceServices, EventGateway],
     exports: [ClientsModule]
 })
 

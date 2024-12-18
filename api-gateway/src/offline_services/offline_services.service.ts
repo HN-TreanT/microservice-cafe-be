@@ -70,6 +70,7 @@ export class OfflineServiceServices {
     this.offlineClient.subscribeToResponseOf('combine-inovice');
     this.offlineClient.subscribeToResponseOf('over-view');
     this.offlineClient.subscribeToResponseOf('revenue-overview');
+    this.offlineClient.subscribeToResponseOf('payment');
 
     this.offlineClient.subscribeToResponseOf('list-invoice-detail');
     this.offlineClient.subscribeToResponseOf('detail-invoice-detail');
@@ -137,6 +138,8 @@ export class OfflineServiceServices {
     this.offlineClient.subscribeToResponseOf('create-workshift');
     this.offlineClient.subscribeToResponseOf('edit-workshift');
     this.offlineClient.subscribeToResponseOf('delete-workshift');
+
+    this.offlineClient.subscribeToResponseOf('complete-invoice');
     await this.offlineClient.connect();
 
     

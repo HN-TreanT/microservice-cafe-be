@@ -4,6 +4,7 @@ import { JwtService } from "@nestjs/jwt";
 import InfoChangePassword from "./dto/info-change-password.dto";
 import { ClientKafka } from "@nestjs/microservices";
 import RoleDTO from "./dto/rol-dto";
+import PermissionRoleDTO from "./dto/permission-role.dto";
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,12 @@ export class AuthService {
     this.authClient.subscribeToResponseOf('create-role');
     this.authClient.subscribeToResponseOf('edit-role');
     this.authClient.subscribeToResponseOf('delete-role');
+    this.authClient.subscribeToResponseOf('list-permissions');
+    this.authClient.subscribeToResponseOf('list-permissions-role');
+    this.authClient.subscribeToResponseOf('edit-permissions-role');
+    this.authClient.subscribeToResponseOf('list-user');
+    this.authClient.subscribeToResponseOf('edit-user');
+    this.authClient.subscribeToResponseOf('delete-user');
     this.authClient.connect();
   }
 
@@ -68,4 +75,41 @@ export class AuthService {
   const data = await this.authClient.send('edit-role', JSON.stringify(dto)).toPromise();
   return data;
  }
+
+ async getAllPermissions() {
+  const data = await this.authClient.send('list-permissions', { }).toPromise();
+  return data;
+ }
+
+ async getAllPermissionRoles (id: string) {
+  const data = await this.authClient.send('list-permissions-role', {id} ).toPromise();
+  return data
+ }
+
+ async editPermisionRoles(dto : PermissionRoleDTO) {
+  const data = await this.authClient.send('edit-permissions-role', JSON.stringify(dto) ).toPromise();
+  return data;
+ }
+
+
+ async editUser(registerInfo: RegisterInfo) {
+  const data = await this.authClient.send('edit-user', JSON.stringify(registerInfo)).toPromise();
+  return data;
+  }
+  
+  async getUser (pagination: any, filter: any) {
+    const data = await this.authClient.send('list-user', { pagination, filter }).toPromise();
+    return data;
+  }
+
+  async deleteUser(id: any) {
+    const data = await this.authClient.send('delete-user', {id}).toPromise();
+    if (data) {
+      return data;
+    } else {
+      throw new NotFoundException("User not found");
+    }
+   
+  }
+  
 }

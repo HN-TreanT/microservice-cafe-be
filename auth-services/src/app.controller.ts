@@ -4,6 +4,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import RegisterInfo from './dto/register-info';
 import InfoChangePassword from './dto/info-change-password.dto';
 import RoleDTO from './dto/rol-dto';
+import PermissionRoleDTO from './dto/permission-role.dto';
 
 @Controller()
 export class AppController {
@@ -53,5 +54,36 @@ export class AppController {
   @MessagePattern("delete-role")
   async deleteRole(@Payload("id") id : string) {
     return this.appService.deleteRole(id);
+  }
+
+  @MessagePattern("list-permissions")
+  async listPermissions() {
+    return this.appService.getAllPermission()
+  }
+
+  @MessagePattern("list-permissions-role")
+  async getAllPermissionRole(@Payload("id") id : string) {
+    return this.appService.getAllPermisionRole(id);
+  }
+
+  @MessagePattern("edit-permissions-role")
+  async editPermissionRole(@Payload() dto : PermissionRoleDTO) {
+    return this.appService.editPermisionRole(dto);
+  }
+
+  @MessagePattern("list-user")
+  async getUser(@Payload() payload: any) {
+    const {pagination, filter} = payload
+    return this.appService.getUser(pagination, filter)
+  }
+
+  @MessagePattern("edit-user")
+  async editUser(@Payload() registerInfo: RegisterInfo) {
+    return this.appService.editUser(registerInfo)
+  }
+
+  @MessagePattern("delete-user")
+  async deleteUser(@Payload("id") id : any) {
+    return this.appService.deleteUser(id)
   }
 }

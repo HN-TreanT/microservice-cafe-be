@@ -16,4 +16,14 @@ export class Permission extends Model<Permission> {
 
   @HasMany(() => PermissionRole)
   permissions: PermissionRole[];
+
+  @Column({
+    type: DataType.STRING,
+  })
+  type: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  method: string;
 }
