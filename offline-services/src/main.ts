@@ -8,7 +8,6 @@ import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { MicroserviceOptions, Transport } from "@nestjs/microservices";
-import { RpcExceptionFilter } from "./filter/rpcexception.filter";
 // import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 declare const module: any;
 async function bootstrap() {
@@ -20,7 +19,6 @@ async function bootstrap() {
   app.setGlobalPrefix("/api/v1");
   app.useStaticAssets(path.join(__dirname, "../public"));
 
-  app.useGlobalFilters(new RpcExceptionFilter());
 
   app.use(bodyParser.json({}));
   app.use(bodyParser.urlencoded({ extended: true }));
