@@ -20,7 +20,7 @@ export class CustomerController {
     const pagination = req.pagination;
     let filter = {};
     if (search) {
-      filter["name"] = { [Op.substring]: search };
+      filter["name"] = search;
     }
     if (email) {
       //   filter["email"] = { [Op.substring]: email };

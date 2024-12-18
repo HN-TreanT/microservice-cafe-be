@@ -7,26 +7,26 @@ import { CustomerDTO } from './dto/customer-dto';
 export class CustomerController {
     constructor(private readonly appService: CustomerService) {}
 
-    @MessagePattern("list-customer")
+    @MessagePattern("list-customer-online")
     async get(@Payload() payload: any) {
         const {pagination, filter} = payload;
         const data = await this.appService.get(pagination, filter);
         return data;
     }
 
-    @MessagePattern("create-customer") 
+    @MessagePattern("create-customer-online") 
     async create(dto : CustomerDTO) {
         const data = await this.appService.create(dto);
     }
 
-    @MessagePattern("edit-customer")
+    @MessagePattern("edit-customer-online")
     async edit(@Payload() payload: { id: number, editInfo: CustomerDTO }) {
       const {id, editInfo} = payload; 
       const data = await this.appService.edit(id, editInfo);
       return data;
     }
 
-    @MessagePattern("delete-customer")
+    @MessagePattern("delete-customer-online")
     async deleteID(@Param("id", ParseIntPipe) id: number) {
         await this.appService.delete(id);
         return true;

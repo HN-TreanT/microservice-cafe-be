@@ -9,10 +9,10 @@ export class OnlineServiceServices {
 
   async onModuleInit() {
     //customer
-    this.client.subscribeToResponseOf('list-customer');
-    this.client.subscribeToResponseOf('create-customer');
-    this.client.subscribeToResponseOf('edit-customer');
-    this.client.subscribeToResponseOf('delete-customer');
+    this.client.subscribeToResponseOf('list-customer-online');
+    this.client.subscribeToResponseOf('create-customer-online');
+    this.client.subscribeToResponseOf('edit-customer-online');
+    this.client.subscribeToResponseOf('delete-customer0-online');
     await this.client.connect();  
   }
 

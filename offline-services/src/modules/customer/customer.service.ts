@@ -4,10 +4,14 @@ import { Customer } from "./customer.entity";
 import { PagedData } from "src/models/PagedData";
 import { CustomerCreate } from "./dto/customer-create.dto";
 import { CustomerEdit } from "./dto/customer-edit.dto";
+import { Op } from "sequelize";
 @Injectable()
 export class CustomerService {
   constructor(@Inject(CUSTOMER_REPOSITORY) private readonly customerRepository: typeof Customer) {}
   async get(pagination: any, filter: any): Promise<PagedData<Customer>> {
+    if (filter?.name) {
+      filter["name"] = {[Op.substring]: filter.name}
+    }
     const { count, rows } = await this.customerRepository.findAndCountAll({
       where: { ...filter },
       ...pagination,

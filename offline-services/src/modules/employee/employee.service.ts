@@ -33,6 +33,7 @@ export class EmployeeService {
     if (filter.id_position) {
       filterData.id_position = filter.id_position;
     }
+    console.log(filterData)
     const { count, rows } = await this.employeeRepository.findAndCountAll({
       attributes: {
         exclude: ["password"],
