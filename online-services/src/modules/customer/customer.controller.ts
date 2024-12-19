@@ -3,6 +3,7 @@ import { CustomerService } from './customer.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CustomerDTO } from './dto/customer-dto';
 
+
 @Controller('customer')
 export class CustomerController {
     constructor(private readonly appService: CustomerService) {}
@@ -17,18 +18,19 @@ export class CustomerController {
     @MessagePattern("create-customer-online") 
     async create(dto : CustomerDTO) {
         const data = await this.appService.create(dto);
+        return data
     }
 
     @MessagePattern("edit-customer-online")
-    async edit(@Payload() payload: { id: number, editInfo: CustomerDTO }) {
-      const {id, editInfo} = payload; 
-      const data = await this.appService.edit(id, editInfo);
+    async edit(@Payload() payload: { id: number, infoEdit: CustomerDTO }) {
+      const {id, infoEdit} = payload; 
+      const data = await this.appService.edit(id, infoEdit);
       return data;
     }
 
     @MessagePattern("delete-customer-online")
-    async deleteID(@Param("id", ParseIntPipe) id: number) {
-        await this.appService.delete(id);
-        return true;
+    async deleteID(@Payload("id", ParseIntPipe) id : number) {
+       const res =  await this.appService.delete(id);
+       return res
     }
 }

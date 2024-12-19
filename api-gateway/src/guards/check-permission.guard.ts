@@ -17,10 +17,8 @@ export class PermissionGuard implements CanActivate {
       throw new UnauthorizedException('Missing authorization header');
     }
     const token = authorizationHeader.split(' ')[1];
-    console.log(token)
     const permission = this.reflector.getAllAndOverride<String>(PERMISSION_KEY, [context.getHandler(), context.getClass()]);
     const response = await this.authClient.send("checkPermission", {token: token, permission: permission}).toPromise();
-    console.log(response)
     if (response["status"] === 401) {
         throw new UnauthorizedException(response["message"])
     }

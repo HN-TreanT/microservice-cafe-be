@@ -10,6 +10,10 @@ export class CustomerService {
     @Inject(CUSTOMER_REPOSITORY) private readonly repository: typeof Customer
 
     async get(pagination: any, filter: any): Promise<any> {
+        console.log(filter)
+        if (filter?.name) {
+            filter["name"] = {[Op.substring]: filter.name}
+        }
         const { count, rows } = await this.repository.findAndCountAll({
             where: {...filter},
             ...pagination
@@ -31,13 +35,15 @@ export class CustomerService {
         const customer = await this.repository.findByPk(id)
         if (!customer) return null
         customer.update(dto)
+        customer.save()
         return customer.get()
     }
 
     async delete(id: number) {
         const customer = await this.repository.findByPk(id)
         if (!customer) return null
-        return customer
+        await customer.destroy()
+        return true
     }
 
     // async create()

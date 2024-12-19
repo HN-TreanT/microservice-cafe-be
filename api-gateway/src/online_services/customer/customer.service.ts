@@ -9,18 +9,18 @@ export class CustomerService {
   ) {}
 
   async get (pagination: any, filter: any) {
-    const data = await this.offlineClient.send('list-customer', { pagination, filter }).toPromise();
+    const data = await this.offlineClient.send('list-customer-online', { pagination, filter }).toPromise();
     return data;
   }
 
 
   async create (infoCreate: CustomerDTO) {
-    const response = await this.offlineClient.send('create-customer', JSON.stringify(infoCreate)).toPromise();
+    const response = await this.offlineClient.send('create-customer-online', JSON.stringify(infoCreate)).toPromise();
     return response
   }
 
   async edit (id: number, infoEdit: CustomerDTO) {
-    const response = await this.offlineClient.send('edit-customer', {
+    const response = await this.offlineClient.send('edit-customer-online', {
       id: id,
       infoEdit: infoEdit
     }).toPromise();
@@ -28,7 +28,7 @@ export class CustomerService {
   }
 
   async deleteById (id: number) {
-    const response = await this.offlineClient.send('delete-customer', {id}).toPromise();
+    const response = await this.offlineClient.send('delete-customer-online', {id}).toPromise();
     return response
   }
   

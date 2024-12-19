@@ -1,5 +1,6 @@
 
 import { AutoIncrement, Table, Model, PrimaryKey, Column, DataType, Unique, BelongsTo, ForeignKey, Default, IsEmail } from "sequelize-typescript";import { Order } from "./order.entity";
+import { Shipper } from "./shipper.entity";
 ;
 
 @Table({tableName: "shipment_online"})
@@ -17,6 +18,13 @@ export class ShipmentOnline extends Model<ShipmentOnline> {
       allowNull: false,
     })
     id_order: number;
+
+    @ForeignKey(() => Shipper)
+    @Column({
+      type: DataType.BIGINT,
+      allowNull: false,
+    })
+    id_shipper: number;
 
     @Column({
         type: DataType.TEXT,

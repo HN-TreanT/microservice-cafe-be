@@ -2,6 +2,9 @@ import { Module } from "@nestjs/common";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { OnlineServiceServices } from "./online_service.service";
 import { CustomerModule } from "./customer/customer.module";
+import { AuthModule } from "src/auth_services/auth.module";
+import { CustomerAddressModule } from './customer_address/customer_address.module';
+import { ShipperModule } from './shipper/shipper.module';
 
 @Module({
     imports:[
@@ -20,7 +23,7 @@ import { CustomerModule } from "./customer/customer.module";
                 },
               }
             }
-          ]), CustomerModule],
+          ]), CustomerModule, AuthModule, CustomerAddressModule, ShipperModule, ShipperModule],
     controllers: [],
     providers: [OnlineServiceServices],
     exports: [ClientsModule]
