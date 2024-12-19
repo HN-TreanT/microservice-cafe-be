@@ -8,6 +8,7 @@ import { OrderDetail } from "src/entities/order_detail.entity";
 import { Order } from "src/entities/order.entity";
 import { Payment } from "src/entities/payment.entity";
 import { ShipmentOnline } from "src/entities/shipment_online.entity";
+import { Shipper } from "src/entities/shipper.entity";
 
 
 export const databaseProviders = [
@@ -31,7 +32,7 @@ export const databaseProviders = [
       }
       const sequelize = new Sequelize(config);
       sequelize.addModels([
-         CustomerAddress, Customer, OrderDetail, Order, Payment, ShipmentOnline
+         CustomerAddress, Customer, OrderDetail, Order, Payment, ShipmentOnline, Shipper
       ]);
       // await sequelize.sync({force: true});
       return sequelize;

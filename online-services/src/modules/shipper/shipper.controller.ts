@@ -23,7 +23,6 @@ export class ShipperController {
     const {id, dto} = payload; 
     return this.shipperService.update(id, dto);
   }
-
   @MessagePattern("delete-shipper")
   remove(@Payload("id", ParseIntPipe) id : number) {
     return this.shipperService.remove(id);

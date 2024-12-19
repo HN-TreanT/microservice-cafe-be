@@ -18,7 +18,6 @@ export class ShipperCreateDTO {
     @IsNotEmpty()
     phone_number: string;
 
-    @IsNotEmpty()
     user_id: number;
 
   }

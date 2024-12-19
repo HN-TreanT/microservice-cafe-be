@@ -11,9 +11,10 @@ import { OrderDetailModule } from './modules/oder_detail/order_detail.module';
 import { OrderModule } from './modules/order/order.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { ShipmentOnlineModule } from './modules/shipment_online/shipment_online.module';
+import { ShipperModule } from './modules/shipper/shipper.module';
 
 @Module({
-  imports: [DatabaseModule, LoggerModule, CustomerModule, CustomerAddressModule, OrderDetailModule, OrderModule, PaymentModule, ShipmentOnlineModule ],
+  imports: [DatabaseModule, LoggerModule, CustomerModule, CustomerAddressModule, OrderDetailModule, OrderModule, PaymentModule, ShipmentOnlineModule, ShipperModule ],
   controllers: [AppController],
   providers: [
     AppService, 
