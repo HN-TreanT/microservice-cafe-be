@@ -28,7 +28,7 @@ export class OrderDetail extends Model<OrderDetail> {
         type: DataType.BIGINT,
         allowNull: false,
       })
-    quanlity: number;
+    quanity: number;
 
     @Column({
         type: DataType.FLOAT,

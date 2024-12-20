@@ -1,5 +1,5 @@
 
-import { AutoIncrement, Table, Model, PrimaryKey, Column, DataType, Unique, BelongsTo, ForeignKey, Default, HasMany } from "sequelize-typescript";import { Customer } from "./customer.entity";
+import { AutoIncrement, Table, Model, PrimaryKey, Column, DataType, Unique, BelongsTo, ForeignKey, Default, HasMany, HasOne } from "sequelize-typescript";import { Customer } from "./customer.entity";
 import { OrderDetail } from "./order_detail.entity";
 import { ShipmentOnline } from "./shipment_online.entity";
 import { Payment } from "./payment.entity";
@@ -23,15 +23,10 @@ export class Order extends Model<Order> {
     
     @Column({
         type: DataType.FLOAT,
-        allowNull: false,
+        allowNull: true,
       })
     total_price: number;
 
-    @Column({
-        type: DataType.BIGINT,
-        allowNull: false,
-      })
-    payment_method: number;
 
     @Default(0)
     @Column({
@@ -39,6 +34,9 @@ export class Order extends Model<Order> {
         allowNull: false,
       })
     status: number;
+
+    // @HasOne(() => Customer)
+    // customer: Customer
 
     @HasMany(() => OrderDetail)
     order_details: OrderDetail[]
@@ -48,5 +46,7 @@ export class Order extends Model<Order> {
 
     @HasMany(() => Payment)
     payments: Payment[]
-
+ 
+    @BelongsTo(() => Customer)
+    customer: Customer
 }

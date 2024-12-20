@@ -23,6 +23,12 @@ export class OnlineServiceServices {
     this.client.subscribeToResponseOf('create-shipper');
     this.client.subscribeToResponseOf('edit-shipper');
     this.client.subscribeToResponseOf('delete-shipper');
+
+
+    this.client.subscribeToResponseOf('list-order');
+    this.client.subscribeToResponseOf('create-order');
+    this.client.subscribeToResponseOf('edit-order');
+    this.client.subscribeToResponseOf('delete-order');
     await this.client.connect();  
   }
 

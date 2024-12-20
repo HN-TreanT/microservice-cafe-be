@@ -12,10 +12,29 @@ import { OrderModule } from './modules/order/order.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { ShipmentOnlineModule } from './modules/shipment_online/shipment_online.module';
 import { ShipperModule } from './modules/shipper/shipper.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-  imports: [DatabaseModule, LoggerModule, CustomerModule, CustomerAddressModule, OrderDetailModule, OrderModule, PaymentModule, ShipmentOnlineModule, ShipperModule ],
+  imports: [
+    ClientsModule.register([
+      {
+        name: "OFFLINE_SERVICES",
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'offline-services',
+            // brokers: ['kafka:9092'],
+            brokers: [`${process.env.KAFKA_HOST}:${process.env.KAFKA_PORT}`],
+          },
+          consumer: {
+            groupId: 'offline-services-consumer1',
+          },
+        }
+      }
+    ]),
+    DatabaseModule, LoggerModule, CustomerModule, CustomerAddressModule, OrderDetailModule, OrderModule, PaymentModule, ShipmentOnlineModule, ShipperModule ],
   controllers: [AppController],
+  exports: [ClientsModule],
   providers: [
     AppService, 
     {

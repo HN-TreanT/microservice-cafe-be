@@ -5,6 +5,7 @@ import { CustomerModule } from "./customer/customer.module";
 import { AuthModule } from "src/auth_services/auth.module";
 import { CustomerAddressModule } from './customer_address/customer_address.module';
 import { ShipperModule } from './shipper/shipper.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
     imports:[
@@ -23,7 +24,7 @@ import { ShipperModule } from './shipper/shipper.module';
                 },
               }
             }
-          ]), CustomerModule, AuthModule, CustomerAddressModule, ShipperModule, ShipperModule],
+          ]), CustomerModule, AuthModule, CustomerAddressModule, ShipperModule, ShipperModule, OrderModule],
     controllers: [],
     providers: [OnlineServiceServices],
     exports: [ClientsModule]

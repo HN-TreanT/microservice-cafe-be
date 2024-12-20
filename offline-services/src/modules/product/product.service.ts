@@ -69,7 +69,7 @@ export class ProductServices {
       ],
     });
     if (!product) throw new NotFoundException({ message: "not found product", status: false });
-    return product;
+    return product.get();
   }
 
   async create(infoCreate: ProductCreate, file: Express.Multer.File): Promise<Product> {
