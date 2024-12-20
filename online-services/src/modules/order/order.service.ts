@@ -7,6 +7,7 @@ import { ShipmentOnline } from 'src/entities/shipment_online.entity';
 import { OrderCreateDTO } from './dto/order-create.dto';
 import { ClientKafka } from '@nestjs/microservices';
 import { Sequelize } from 'sequelize';
+import { ChangeStatusOrderDTO } from './dto/change-status-order.dto';
 
 @Injectable()
 export class OrderService {
@@ -91,11 +92,91 @@ export class OrderService {
       
    }
 
-   async edit() {
+   async edit(id: number, dto: OrderCreateDTO) {
+    const transaction = await this.sequelize.transaction();
+    try {
+       const order = await this.orderRepository.findByPk(id)
+       if (!order) return {
+          status: 404,
+          message: 'Order not found'
+       };
+
+       if (order.status !== 1) {
+        return {
+           status: 400,
+           message: 'Không thể chỉnh sửa đơn hàng khi hàng đã gửi'
+        };
+       }
+
+       //remove order detail
+       await this.orderDetailRepository.destroy({where: {id_order: order.id}, transaction: transaction})
+       const order_detail_custom = dto.order_details.map((item) => {
+        return { 
+            ...item,
+            id_order: order.id
+         };     
+       });
+
+       //add order detail
+       await this.orderDetailRepository.bulkCreate(order_detail_custom, {
+        transaction: transaction
+       });
+       const totalPrice = dto.order_details.reduce((sum, detail) => sum + detail.quanity * detail.price, 0);
+       order.total_price = totalPrice;
+       await order.save({ transaction: transaction });
+       await transaction.commit();
+      
+       return {
+        status: 200,
+        data: order.get()
+       };
+
+
+    } catch (err) {
+      await transaction.rollback();
+      console.log(err);
+    }
 
    }
 
-   async remove() {
+   async remove(id: number) {
+     const transaction = await this.sequelize.transaction();
+     try {
+      const order = await this.orderRepository.findByPk(id)
+      if (!order) return {
+        status: 404,
+        message: 'Order not found'
+      };
 
+      await order.destroy({transaction: transaction})
+      await transaction.commit();
+      return {
+        status: 200,
+        message: "success"
+      }
+   
+     } catch (err) {
+      await transaction.rollback();
+      console.log(err);
+     }
+   }
+
+   async changeStatusOrder(dto: ChangeStatusOrderDTO) {
+    const transaction = await this.sequelize.transaction();
+    try {
+       console.log(dto)
+       const order = await this.orderRepository.findByPk(dto.id_oder)
+       if (!order) return {
+          status: 404,
+          message: 'Order not found'
+       };
+
+       order.status = dto.status;
+       await order.save({ transaction: transaction });
+       await transaction.commit();
+       return order.get()
+    } catch (err) {
+
+    }
    }
 }

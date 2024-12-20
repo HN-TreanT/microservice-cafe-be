@@ -3,6 +3,7 @@ import { OrderService } from './order.service';
 import { OrderCreateDTO } from './dto/order-create.dto';
 import { PermissionGuard } from 'src/guards/check-permission.guard';
 import { Permissions } from 'src/decorator/permission.decorator';
+import { ChangeStatusOrderDTO } from './dto/change-status-order.dto';
 
 @Controller('online/order')
 export class OrderController {
@@ -30,8 +31,8 @@ export class OrderController {
   @Permissions("edit_order")
   @UseGuards(PermissionGuard)
   @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: OrderCreateDTO) {
-    return this.orderService.update(+id, dto);
+  async update(@Param('id') id: number, @Body() dto: OrderCreateDTO) {
+    return this.orderService.update(id, dto);
   }
 
 
@@ -40,5 +41,12 @@ export class OrderController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.orderService.remove(+id);
+  }
+
+  @Permissions("edit_order")
+  @UseGuards(PermissionGuard)
+  @Post('/change-status')
+  async changeStatusOrder(@Body() dto: ChangeStatusOrderDTO) {
+    return this.orderService.changeStatusOrder(dto);
   }
 }

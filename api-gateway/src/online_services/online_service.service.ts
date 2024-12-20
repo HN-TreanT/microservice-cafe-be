@@ -29,6 +29,7 @@ export class OnlineServiceServices {
     this.client.subscribeToResponseOf('create-order');
     this.client.subscribeToResponseOf('edit-order');
     this.client.subscribeToResponseOf('delete-order');
+    this.client.subscribeToResponseOf("change-status-order");
     await this.client.connect();  
   }
 
