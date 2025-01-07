@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  labels:
+    app: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: localhost:5000/auth_service_image:latest
+          # imagePullPolicy: Never
+          ports:
+            - containerPort: 9000
+          env:
+            - name: PORT
+              value: "9000"
+            - name: KAFKA_PORT
+              value: "9092"
+            - name: KAFKA_HOST
+              value: kafka-svc.kafka.svc.cluster.local
+            - name: DB_HOST
+              value: "mysql-service.default.svc.cluster.local"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: "root"
+            - name: DB_PASS
+              value: "hnam23012002"
+            - name: DB_DIALECT
+              value: "mysql"
+            - name: DB_NAME_DEVELOPMENT
+              value: "auth_service"
+            - name: DB_NAME_PRODUCTION
+              value: "auth_service"
+            - name: NODE_ENV
+              value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service-service
+  labels:
+    app: auth-service
+spec:
+  selector:
+    app: auth-service
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+  type: ClusterIP
