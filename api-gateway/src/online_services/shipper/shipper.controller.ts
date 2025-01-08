@@ -10,8 +10,8 @@ import { Permissions } from 'src/decorator/permission.decorator';
 export class ShipperController {
   constructor(private readonly shipperService: ShipperService,  private readonly authService: AuthService) {}
 
-  @Permissions("create_shipper")
-  @UseGuards(PermissionGuard)
+  // @Permissions("create_shipper")
+  // @UseGuards(PermissionGuard)
   @Post()
   async create(@Body() dto: ShipperCreateDTO) {
     const register_info = {

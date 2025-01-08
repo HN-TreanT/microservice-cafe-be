@@ -33,8 +33,8 @@ export class CustomerController {
     return data;
   }
 
-  @Permissions("create_customer")
-  @UseGuards(PermissionGuard)
+  // @Permissions("create_customer")
+  // @UseGuards(PermissionGuard)
   @Post()
   async create(@Body() infoCreate: CustomerCreateDTO) {
     const register_info = {

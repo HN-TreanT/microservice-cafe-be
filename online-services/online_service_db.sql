@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.34, for macos13 (arm64)
 --
--- Host: 127.0.0.1    Database: online_service
+-- Host: 103.47.224.116    Database: online_service
 -- ------------------------------------------------------
--- Server version	8.0.40
+-- Server version	5.7.44
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -23,17 +23,17 @@ DROP TABLE IF EXISTS `customer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `customer` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
-  `gender` int NOT NULL DEFAULT '1',
+  `gender` int(11) NOT NULL DEFAULT '1',
   `email` text,
   `phone_number` text,
-  `user_id` bigint DEFAULT NULL,
-  `point` int DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `point` int(11) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,6 +42,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+INSERT INTO `customer` VALUES (1,' Khách hàng 2',1,'khachhang2@gmail.com','0971259398',9,0,'2024-12-20 01:03:47','2024-12-20 01:03:47');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -53,17 +54,17 @@ DROP TABLE IF EXISTS `customer_address`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `customer_address` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `id_customer` bigint NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id_customer` bigint(20) NOT NULL,
   `address` text NOT NULL,
   `phone_number` text NOT NULL,
-  `is_default` int NOT NULL DEFAULT '0',
+  `is_default` int(11) NOT NULL DEFAULT '0',
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_customer` (`id_customer`),
   CONSTRAINT `customer_address_ibfk_1` FOREIGN KEY (`id_customer`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,17 +84,16 @@ DROP TABLE IF EXISTS `order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `id_customer` bigint NOT NULL,
-  `total_price` float NOT NULL,
-  `payment_method` bigint NOT NULL,
-  `status` int NOT NULL DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id_customer` bigint(20) NOT NULL,
+  `total_price` float DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_customer` (`id_customer`),
   CONSTRAINT `order_ibfk_1` FOREIGN KEY (`id_customer`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,6 +102,7 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
+INSERT INTO `order` VALUES (15,1,60000,1,'2024-12-20 03:08:19','2024-12-20 07:32:51');
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,17 +114,17 @@ DROP TABLE IF EXISTS `order_detail`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order_detail` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `id_order` bigint NOT NULL,
-  `id_product` bigint NOT NULL,
-  `quanlity` bigint NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id_order` bigint(20) NOT NULL,
+  `id_product` bigint(20) NOT NULL,
+  `quanity` bigint(20) NOT NULL,
   `price` float NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_order` (`id_order`),
   CONSTRAINT `order_detail_ibfk_1` FOREIGN KEY (`id_order`) REFERENCES `order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,6 +133,7 @@ CREATE TABLE `order_detail` (
 
 LOCK TABLES `order_detail` WRITE;
 /*!40000 ALTER TABLE `order_detail` DISABLE KEYS */;
+INSERT INTO `order_detail` VALUES (23,15,52,1,40000,'2024-12-20 07:32:51','2024-12-20 07:32:51'),(24,15,53,1,20000,'2024-12-20 07:32:51','2024-12-20 07:32:51');
 /*!40000 ALTER TABLE `order_detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,18 +145,18 @@ DROP TABLE IF EXISTS `payment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `payment` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `id_order` bigint NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id_order` bigint(20) NOT NULL,
   `payment_method` text NOT NULL,
   `transaction_id` text NOT NULL,
   `payment_time` time NOT NULL,
-  `transaction_status` int NOT NULL DEFAULT '0',
+  `transaction_status` int(11) NOT NULL DEFAULT '0',
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_order` (`id_order`),
   CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`id_order`) REFERENCES `order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,18 +176,21 @@ DROP TABLE IF EXISTS `shipment_online`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `shipment_online` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `id_order` bigint NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id_order` bigint(20) NOT NULL,
+  `id_shipper` bigint(20) NOT NULL,
   `shipping_address` text NOT NULL,
   `shipping_fee` float NOT NULL,
   `estimated_delivery_time` time NOT NULL,
-  `delivery_status` int NOT NULL DEFAULT '0',
+  `delivery_status` int(11) NOT NULL DEFAULT '0',
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_order` (`id_order`),
-  CONSTRAINT `shipment_online_ibfk_1` FOREIGN KEY (`id_order`) REFERENCES `order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `id_shipper` (`id_shipper`),
+  CONSTRAINT `shipment_online_ibfk_1` FOREIGN KEY (`id_order`) REFERENCES `order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `shipment_online_ibfk_2` FOREIGN KEY (`id_shipper`) REFERENCES `shipper` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -195,6 +200,33 @@ CREATE TABLE `shipment_online` (
 LOCK TABLES `shipment_online` WRITE;
 /*!40000 ALTER TABLE `shipment_online` DISABLE KEYS */;
 /*!40000 ALTER TABLE `shipment_online` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `shipper`
+--
+
+DROP TABLE IF EXISTS `shipper`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `shipper` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text,
+  `phone_number` text,
+  `user_id` bigint(20) DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `shipper`
+--
+
+LOCK TABLES `shipper` WRITE;
+/*!40000 ALTER TABLE `shipper` DISABLE KEYS */;
+/*!40000 ALTER TABLE `shipper` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -206,4 +238,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-18 13:33:40
+-- Dump completed on 2025-01-08 23:38:41
