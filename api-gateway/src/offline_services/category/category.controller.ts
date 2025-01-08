@@ -14,8 +14,8 @@ import { Permissions } from "src/decorator/permission.decorator";
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService ) {}
 
-  @Permissions("view_category")
-  @UseGuards(PermissionGuard)
+  // @Permissions("view_category")
+  // @UseGuards(PermissionGuard)
   @Get("/")
   async get(@Req() req: any, @Query("search") search: string) {
     const pagination = req.pagination;
@@ -29,8 +29,8 @@ export class CategoryController {
   }
 
 
-  @Permissions("view_category")
-  @UseGuards(PermissionGuard)
+  // @Permissions("view_category")
+  // @UseGuards(PermissionGuard)
   @Get("/:id")
   async getById(@Param("id") id: number) {
     const data = await this.categoryService.getById(id);

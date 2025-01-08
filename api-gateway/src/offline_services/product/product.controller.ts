@@ -18,8 +18,8 @@ export class ProductController {
   constructor(private readonly productService: ProductServices) {}
 
 
-  @Permissions("view_product")
-  @UseGuards(PermissionGuard)
+  // @Permissions("view_product")
+  // @UseGuards(PermissionGuard)
   @Get()
   async get(@Req() req: any, @Query() filter: ProductFilter, @Query() order?: ProductOrder) {
     const pagination = req.pagination;
@@ -27,8 +27,8 @@ export class ProductController {
     return data;
   }
 
-  @Permissions("view_product")
-  @UseGuards(PermissionGuard)
+  // @Permissions("view_product")
+  // @UseGuards(PermissionGuard)
   @Get("/:id")
   async getById(@Param("id") id: number) {
     const data = await this.productService.getById(id);
