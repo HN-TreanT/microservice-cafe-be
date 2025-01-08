@@ -183,7 +183,9 @@ export class OrderService {
     const transaction = await this.sequelize.transaction();
     try {
       console.log(dto);
-      const order = await this.orderRepository.findByPk(dto.id_oder);
+      const order = await this.orderRepository.findOne({
+        where: { id: dto.id_oder },
+      });
       if (!order)
         return {
           status: 404,
@@ -193,7 +195,7 @@ export class OrderService {
       order.status = dto.status;
       await order.save({ transaction: transaction });
       await transaction.commit();
-      return order.get();
+      return order;
     } catch (err) {}
   }
 }
