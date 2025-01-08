@@ -48,9 +48,8 @@ export class CustomerController {
     const data = await this.customerService.get(pagination, filter);
     return data;
   }
-
-  @Permissions('create_customer')
-  @UseGuards(PermissionGuard)
+  // @Permissions("create_customer")
+  // @UseGuards(PermissionGuard)
   @Post()
   async create(@Body() infoCreate: CustomerCreateDTO) {
     const register_info = {
