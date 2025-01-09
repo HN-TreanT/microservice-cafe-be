@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OfflineServiceModule } from './offline_services/offline_services.module';
@@ -10,9 +15,17 @@ import { ConfigModule } from '@nestjs/config';
 import { PaginationMiddleware } from './middleware/pagination.middleware';
 import { AuthModule } from './auth_services/auth.module';
 import { OnlineServiceModule } from './online_services/online_service.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [AuthModule, OfflineServiceModule, OnlineServiceModule, LoggerModule, ConfigModule.forRoot({ isGlobal: true })],
+  imports: [
+    HttpModule,
+    AuthModule,
+    OfflineServiceModule,
+    OnlineServiceModule,
+    LoggerModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+  ],
   controllers: [AppController],
   providers: [
     AppService,
@@ -27,8 +40,10 @@ import { OnlineServiceModule } from './online_services/online_service.module';
     },
   ],
 })
-export class AppModule implements NestModule{
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(PaginationMiddleware).forRoutes({ path: "*", method: RequestMethod.GET });
+    consumer
+      .apply(PaginationMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.GET });
   }
 }
