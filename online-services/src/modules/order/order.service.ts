@@ -76,6 +76,7 @@ export class OrderService {
       const order_create = {
         id_customer: dto.id_customer,
         status: 1,
+        address: dto.address,
       };
       const order = await this.orderRepository.create(order_create, {
         transaction: transaction,
@@ -144,6 +145,7 @@ export class OrderService {
         0,
       );
       order.total_price = totalPrice;
+      order.address = dto.address;
       await order.save({ transaction: transaction });
       await transaction.commit();
 
@@ -180,12 +182,12 @@ export class OrderService {
   }
 
   async changeStatusOrder(dto: ChangeStatusOrderDTO) {
-    const transaction = await this.sequelize.transaction();
     try {
       console.log(dto);
       const order = await this.orderRepository.findOne({
         where: { id: dto.id_oder },
       });
+
       if (!order)
         return {
           status: 404,
@@ -193,8 +195,7 @@ export class OrderService {
         };
 
       order.status = dto.status;
-      await order.save({ transaction: transaction });
-      await transaction.commit();
+      await order.save();
       return order;
     } catch (err) {}
   }
