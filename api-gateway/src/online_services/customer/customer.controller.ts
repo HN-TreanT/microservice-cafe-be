@@ -91,4 +91,10 @@ export class CustomerController {
     }
     throw new NotFoundException('not found customer');
   }
+
+  @Get('/detail')
+  async detail(@Req() req: any, @Query('user_id') user_id: number) {
+    const data = await this.customerService.detail(user_id);
+    return data;
+  }
 }
