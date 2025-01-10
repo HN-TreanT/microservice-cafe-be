@@ -75,7 +75,7 @@ export class OrderService {
     try {
       const order_create = {
         id_customer: dto.id_customer,
-        status: 1,
+        status: 0,
         address: dto.address,
       };
       const order = await this.orderRepository.create(order_create, {
